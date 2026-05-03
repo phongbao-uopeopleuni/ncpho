@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-elegant: "Cormorant Garamond", serif;
+
+  --color-primary: #1B4332; /* Forest Green */
+  --color-accent-gold: #D4AF37;
+  --color-accent-pink: #F48FB1;
+  --color-bg-cream: #FAF9F6;
+  --color-text-dark: #2D2D2D;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-cream text-text-dark font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4 {
+    @apply font-serif;
+  }
+}
+
+.serif-italic {
+  font-family: var(--font-elegant);
+  font-style: italic;
+}
+
+.section-padding {
+  @apply py-20 px-6 md:px-12 lg:px-24;
+}
+
+.text-reveal {
+  @apply opacity-0 translate-y-4 transition-all duration-700 ease-out;
+}
+
+.text-reveal.active {
+  @apply opacity-100 translate-y-0;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

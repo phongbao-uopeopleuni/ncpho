@@ -24,7 +24,7 @@ export default function About({ lang }: AboutProps) {
             <div className="aspect-[4/5] bg-bg-cream rounded-full overflow-hidden shadow-2xl relative z-10 border border-primary/5 p-3 sm:p-4">
               <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full">
                 <img
-                  src="/home.png"
+                  src={`${import.meta.env.BASE_URL}home.png`}
                   alt=""
                   className="absolute left-1/2 top-1/2 h-[92%] w-[92%] max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 object-contain object-center"
                   decoding="async"

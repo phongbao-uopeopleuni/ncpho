@@ -77,7 +77,7 @@ export default function Hero({ lang }: HeroProps) {
               {lang === "en" ? "Explore Menu" : "Khám phá thực đơn"}
             </Link>
             <a 
-              href={`tel:${BRAND_INFO.phone.replace(/\D/g, '')}`}
+              href={`tel:${BRAND_INFO.phoneTel}`}
               className="w-full sm:w-auto border-2 border-primary text-primary px-10 py-4 rounded-full text-lg font-medium hover:bg-primary hover:text-white transition-all flex justify-center items-center gap-2"
             >
               <Phone size={20} />

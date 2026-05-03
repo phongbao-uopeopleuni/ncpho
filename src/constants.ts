@@ -23,7 +23,10 @@ export const BRAND_INFO = {
   },
   location: "Washington, NC",
   address: "109 Greenville Blvd SE Suite #100, Greenville, NC 27858",
-  phone: "(252) 756-7272",
+  /** Display string for UI */
+  phone: "(+1) 252-756-7272",
+  /** E.164 without `tel:` prefix — use for `href="tel:..."` */
+  phoneTel: "+12527567272",
   email: "info@ncpho.com",
   social: {
     facebook: "https://facebook.com/ncpho",

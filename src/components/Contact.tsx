@@ -31,7 +31,7 @@ export default function Contact({ lang }: ContactProps) {
               <div className="mb-9 rounded-[1.75rem] sm:rounded-[2rem] bg-gradient-to-br from-white/[0.14] via-white/[0.07] to-white/[0.04] p-3 sm:p-4 md:p-5 ring-1 ring-white/10 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
                 <div className="overflow-hidden rounded-3xl bg-white/[0.06] ring-1 ring-white/10">
                   <img
-                    src="/home.png"
+                    src={`${import.meta.env.BASE_URL}home.png`}
                     alt={lang === "en" ? "North Carolina Phở restaurant" : "Nhà hàng North Carolina Phở"}
                     className="block w-full max-h-[9.5rem] sm:max-h-[11rem] md:max-h-[12rem] rounded-3xl object-contain object-center"
                     draggable={false}

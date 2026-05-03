@@ -72,7 +72,7 @@ export default function App() {
 
       {/* Floating Call Button for Mobile */}
       <a 
-        href={`tel:${BRAND_INFO.phone.replace(/\D/g, '')}`}
+        href={`tel:${BRAND_INFO.phoneTel}`}
         className="fixed bottom-6 right-6 z-50 md:hidden bg-primary text-white p-4 rounded-full shadow-2xl border-2 border-white animate-bounce flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
         aria-label="Call Us"
       >

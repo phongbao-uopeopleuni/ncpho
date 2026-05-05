@@ -1,0 +1,36 @@
+name: Quarterly Security Review
+
+on:
+  schedule:
+    - cron: "0 3 1 */3 *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quarterly-review:
+    name: Quarterly security governance checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify security playbooks exist
+        run: |
+          test -f SECURITY-INCIDENT-CHECKLIST.md
+          test -f SECURITY-OPERATIONS-RUNBOOK.md
+          test -f SECURITY-RELEASE-CHECKLIST.md
+          test -f SECURITY-QUARTERLY-DRILL.md
+
+      - name: Validate security workflows are present
+        run: |
+          test -f .github/workflows/security-checks.yml
+          test -f .github/workflows/dependency-audit.yml
+
+      - name: Quarterly review reminder
+        run: |
+          echo "Quarterly security review checklist:"
+          echo "1) Run key-leak drill and abuse-traffic drill"
+          echo "2) Review access to GitHub, hosting, and CI secrets"
+          echo "3) Re-check rate-limit and alert thresholds"
+          echo "4) Update runbooks with lessons learned"

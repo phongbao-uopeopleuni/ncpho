@@ -51,8 +51,8 @@ export default function Footer({ lang }: FooterProps) {
               {lang === "en" ? "Legal" : "Pháp lý"}
             </h4>
             <ul className="space-y-4 text-text-dark/70 text-sm font-sans">
-              <li><a href="#" className="hover:text-accent-gold transition-colors">{lang === "en" ? "Privacy Policy" : "Chính sách bảo mật"}</a></li>
-              <li><a href="#" className="hover:text-accent-gold transition-colors">{lang === "en" ? "Terms of Service" : "Điều khoản dịch vụ"}</a></li>
+              <li><Link to="/privacy" className="hover:text-accent-gold transition-colors">{lang === "en" ? "Privacy Policy" : "Chính sách bảo mật"}</Link></li>
+              <li><Link to="/terms" className="hover:text-accent-gold transition-colors">{lang === "en" ? "Terms of Service" : "Điều khoản dịch vụ"}</Link></li>
             </ul>
           </div>
         </div>

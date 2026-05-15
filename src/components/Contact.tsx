@@ -28,15 +28,31 @@ export default function Contact({ lang }: ContactProps) {
               <h2 className="text-4xl font-serif font-bold mb-5 tracking-tight">
                 {lang === "en" ? "Visit Us" : "Ghé thăm chúng tôi"}
               </h2>
-              <div className="mb-9 rounded-[1.75rem] sm:rounded-[2rem] bg-gradient-to-br from-white/[0.14] via-white/[0.07] to-white/[0.04] p-3 sm:p-4 md:p-5 ring-1 ring-white/10 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-                <div className="overflow-hidden rounded-3xl bg-white/[0.06] ring-1 ring-white/10">
-                  <img
-                    src={`${import.meta.env.BASE_URL}home.png`}
-                    alt={lang === "en" ? "North Carolina Phở restaurant" : "Nhà hàng North Carolina Phở"}
-                    className="block w-full max-h-[9.5rem] sm:max-h-[11rem] md:max-h-[12rem] rounded-3xl object-contain object-center"
-                    draggable={false}
+              <div className="mb-9 flex justify-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="relative w-full max-w-[16rem] sm:max-w-[17rem] md:max-w-[18rem] aspect-square"
+                >
+                  <div
+                    className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-accent-gold/20 via-white/5 to-transparent blur-2xl"
+                    aria-hidden
                   />
-                </div>
+                  <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-white shadow-[0_25px_60px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/25">
+                    <img
+                      src={`${import.meta.env.BASE_URL}home.png`}
+                      alt={lang === "en" ? "North Carolina Phở restaurant" : "Nhà hàng North Carolina Phở"}
+                      className="h-full w-full object-contain object-center p-3 sm:p-4"
+                      draggable={false}
+                    />
+                    <div
+                      className="pointer-events-none absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-accent-gold/25"
+                      aria-hidden
+                    />
+                  </div>
+                </motion.div>
               </div>
               <div className="space-y-8">
                 <div className="flex items-start gap-4">

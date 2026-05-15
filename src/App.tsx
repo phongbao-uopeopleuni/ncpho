@@ -14,6 +14,8 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import NotFound from "./components/NotFound";
 import GalleryPage from "./components/GalleryPage";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsOfService from "./components/TermsOfService";
 import SEO from "./components/SEO";
 import { Language, BRAND_INFO } from "./constants";
 
@@ -36,9 +38,32 @@ function Home({ lang }: { lang: Language }) {
   );
 }
 
+const LANG_STORAGE_KEY = "ncpho:lang";
+
+function getInitialLang(): Language {
+  if (typeof window === "undefined") return "en";
+  try {
+    const saved = window.localStorage.getItem(LANG_STORAGE_KEY);
+    if (saved === "en" || saved === "vi") return saved;
+  } catch {
+    // localStorage blocked (private mode / disabled cookies) — fall through to browser hint
+  }
+  const browser = window.navigator?.language?.toLowerCase() ?? "";
+  return browser.startsWith("vi") ? "vi" : "en";
+}
+
 export default function App() {
-  const [lang, setLang] = useState<Language>("en");
+  const [lang, setLang] = useState<Language>(getInitialLang);
   const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(LANG_STORAGE_KEY, lang);
+    } catch {
+      // ignore quota / disabled storage
+    }
+    document.documentElement.lang = lang === "vi" ? "vi" : "en";
+  }, [lang]);
 
   // Scroll to hash section on home (/#menu, /#about, …) or to top otherwise
   useEffect(() => {
@@ -66,6 +91,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home lang={lang} />} />
           <Route path="/gallery" element={<GalleryPage lang={lang} />} />
+          <Route path="/privacy" element={<PrivacyPolicy lang={lang} />} />
+          <Route path="/terms" element={<TermsOfService lang={lang} />} />
           <Route path="*" element={<NotFound lang={lang} />} />
         </Routes>
       </main>

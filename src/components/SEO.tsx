@@ -42,7 +42,6 @@ export default function SEO({ title, description, canonical, lang, type = "websi
 
       {/* Robots control */}
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-      <meta name="referrer" content="no-referrer-when-downgrade" />
     </Helmet>
   );
 }

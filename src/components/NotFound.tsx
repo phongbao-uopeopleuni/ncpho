@@ -21,12 +21,12 @@ export default function NotFound({ lang }: NotFoundProps) {
         lang={lang}
       />
       <div className="text-center">
-        <h1 className="text-9xl font-serif font-bold text-primary opacity-10 mb-[-1.5rem]">404</h1>
+        <p className="text-9xl font-serif font-bold text-primary opacity-60 mb-[-1.5rem]" aria-hidden="true">404</p>
         <div className="relative z-10">
-          <h2 className="text-4xl font-serif font-bold text-primary mb-4">
+          <h1 className="text-4xl font-serif font-bold text-primary mb-4">
             {lang === "en" ? "Oops! Page Lost" : "Rất tiếc! Trang đã lạc mất"}
-          </h2>
-          <p className="text-text-dark/60 mb-10 max-w-sm mx-auto">
+          </h1>
+          <p className="text-text-dark/70 mb-10 max-w-sm mx-auto">
             {lang === "en" 
               ? "It seems like the bowl of phở you're looking for has already been served." 
               : "Có vẻ như bát phở bạn đang tìm đã được phục vụ đi mất rồi."}

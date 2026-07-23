@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Phone } from "lucide-react";
 import Navbar from "./components/Navbar";
@@ -22,11 +22,12 @@ import { Language, BRAND_INFO } from "./constants";
 function Home({ lang }: { lang: Language }) {
   return (
     <>
-      <SEO 
+      <SEO
         title={lang === "en" ? "Home" : "Trang chủ"}
-        description={lang === "en" 
-          ? `Authentic Vietnamese Phở in ${BRAND_INFO.location}. slow-cooked broth, fresh ingredients.` 
-          : BRAND_INFO.story.content.vi
+        description={
+          lang === "en"
+            ? `Authentic Vietnamese Phở in ${BRAND_INFO.location}. Slow-cooked broth, fresh ingredients.`
+            : BRAND_INFO.story.content.vi
         }
         lang={lang}
       />
@@ -38,34 +39,15 @@ function Home({ lang }: { lang: Language }) {
   );
 }
 
-const LANG_STORAGE_KEY = "ncpho:lang";
-
-function getInitialLang(): Language {
-  if (typeof window === "undefined") return "en";
-  try {
-    const saved = window.localStorage.getItem(LANG_STORAGE_KEY);
-    if (saved === "en" || saved === "vi") return saved;
-  } catch {
-    // localStorage blocked (private mode / disabled cookies) — fall through to browser hint
-  }
-  const browser = window.navigator?.language?.toLowerCase() ?? "";
-  return browser.startsWith("vi") ? "vi" : "en";
-}
-
 export default function App() {
-  const [lang, setLang] = useState<Language>(getInitialLang);
+  const [lang, setLang] = useState<Language>("en");
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(LANG_STORAGE_KEY, lang);
-    } catch {
-      // ignore quota / disabled storage
-    }
     document.documentElement.lang = lang === "vi" ? "vi" : "en";
   }, [lang]);
 
-  // Scroll to hash section on home (/#menu, /#about, …) or to top otherwise
+  // Scroll to hash section on home (/#menu, /#about, etc.) or to top otherwise.
   useEffect(() => {
     if (!hash) {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -98,7 +80,7 @@ export default function App() {
       </main>
 
       {/* Floating Call Button for Mobile */}
-      <a 
+      <a
         href={`tel:${BRAND_INFO.phoneTel}`}
         className="fixed bottom-6 right-6 z-50 md:hidden bg-primary text-white p-4 rounded-full shadow-2xl border-2 border-white animate-bounce flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
         aria-label="Call Us"
@@ -110,4 +92,3 @@ export default function App() {
     </div>
   );
 }
-

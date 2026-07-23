@@ -37,7 +37,7 @@ export default function MenuSection({ lang }: MenuSectionProps) {
     <section id="menu" className="section-padding bg-bg-cream scroll-mt-24 md:scroll-mt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
-          <span className="text-accent-gold font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
+          <span className="text-accent-gold-text font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
             {lang === "en" ? "Our Specials" : "Thực đơn đặc sắc"}
           </span>
           <h2 className="text-4xl md:text-5xl text-primary font-bold mb-4">
@@ -87,7 +87,7 @@ export default function MenuSection({ lang }: MenuSectionProps) {
                   key={item.id}
                   className={`col-span-full ${item.id === "ba-sec-wine" ? "mt-4 border-t border-primary/10 pt-10" : ""}`}
                 >
-                  <p className="border-b border-primary/15 pb-2 text-xs font-bold uppercase tracking-[0.28em] text-accent-gold">
+                  <p className="border-b border-primary/15 pb-2 text-xs font-bold uppercase tracking-[0.28em] text-accent-gold-text">
                     {item.sectionLabel}
                   </p>
                 </div>
@@ -111,20 +111,20 @@ export default function MenuSection({ lang }: MenuSectionProps) {
                 <div
                   className={`mb-2 flex gap-3 ${variations ? "items-start" : "items-baseline"} justify-between`}
                 >
-                  <h4 className="min-w-0 flex-1 text-xl font-serif font-bold text-primary transition-colors duration-300 group-hover:text-accent-gold">
+                  <h3 className="min-w-0 flex-1 text-xl font-serif font-bold text-primary transition-colors duration-300 group-hover:text-accent-gold-text">
                     <span className="inline-flex flex-wrap items-baseline gap-x-2 gap-y-1">
                       {menuCode ? (
-                        <span className="font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-accent-gold tabular-nums sm:text-xs">
+                        <span className="font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-accent-gold-text tabular-nums sm:text-xs">
                           {menuCode}
                         </span>
                       ) : null}
                       <span>{name}</span>
                     </span>
-                  </h4>
+                  </h3>
                   {!variations && price ? (
                     <>
                       <div className="mx-4 mb-1 min-w-[2rem] flex-grow border-b border-dashed border-primary/10" />
-                      <span className="shrink-0 text-lg font-sans font-bold text-accent-gold">{price}</span>
+                      <span className="shrink-0 text-lg font-sans font-bold text-accent-gold-text">{price}</span>
                     </>
                   ) : null}
                 </div>
@@ -134,14 +134,14 @@ export default function MenuSection({ lang }: MenuSectionProps) {
                     {Object.entries(variations).map(([optionLabel, optionPrice]) => (
                       <li key={optionLabel} className="flex justify-between gap-4 text-sm">
                         <span className="text-text-dark/75">{optionLabel}</span>
-                        <span className="shrink-0 font-sans font-bold tabular-nums text-accent-gold">{optionPrice}</span>
+                        <span className="shrink-0 font-sans font-bold tabular-nums text-accent-gold-text">{optionPrice}</span>
                       </li>
                     ))}
                   </ul>
                 ) : null}
 
                 {"description" in item && item.description ? (
-                  <p className="mt-2 text-sm font-sans leading-relaxed text-text-dark/60 transition-colors duration-300 group-hover:text-text-dark">
+                  <p className="mt-2 text-sm font-sans leading-relaxed text-text-dark/70 transition-colors duration-300 group-hover:text-text-dark">
                     {item.description}
                   </p>
                 ) : null}
@@ -156,7 +156,7 @@ export default function MenuSection({ lang }: MenuSectionProps) {
               ? "\"A good bowl of phở is a harmony of five flavors, a warm greeting from the chef's soul.\""
               : "\"Bát phở ngon là sự kết hợp hài hòa giữa ngũ vị, là lời chào nồng hậu từ tâm hồn người đầu bếp.\""}
           </p>
-          <button className="text-accent-gold font-bold uppercase tracking-widest text-xs hover:underline underline-offset-8">
+          <button className="text-accent-gold-text font-bold uppercase tracking-widest text-xs hover:underline underline-offset-8">
             {lang === "en" ? "View Full Menu" : "Xem toàn bộ thực đơn"}
           </button>
         </div>

@@ -47,7 +47,7 @@ export default function GalleryPage({ lang }: GalleryPageProps) {
       <main className="pt-24 md:pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-accent-gold font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
+            <span className="text-accent-gold-text font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
               {lang === "en" ? "Visual Journey" : "Hành trình thị giác"}
             </span>
             <h1 className="text-4xl md:text-6xl text-primary font-bold mb-6">
@@ -100,17 +100,17 @@ export default function GalleryPage({ lang }: GalleryPageProps) {
                        {getIcon(item.category)}
                        <span className="text-[10px] uppercase font-bold tracking-widest">{item.category}</span>
                     </div>
-                    <h3 className="text-white text-xl font-serif font-bold mb-2">{item.title}</h3>
-                    <p className="text-white/70 text-sm">{item.description}</p>
+                    <h2 className="text-white text-xl font-serif font-bold mb-2">{item.title}</h2>
+                    <p className="text-white/90 text-sm">{item.description}</p>
                   </div>
                 </div>
                 <div className="p-6 md:hidden">
-                    <div className="flex items-center gap-2 text-accent-gold mb-1">
+                    <div className="flex items-center gap-2 text-accent-gold-text mb-1">
                        {getIcon(item.category)}
                        <span className="text-[10px] uppercase font-bold tracking-widest">{item.category}</span>
                     </div>
-                    <h3 className="text-primary text-lg font-serif font-bold mb-1">{item.title}</h3>
-                    <p className="text-text-dark/60 text-xs">{item.description}</p>
+                    <h2 className="text-primary text-lg font-serif font-bold mb-1">{item.title}</h2>
+                    <p className="text-text-dark/70 text-xs">{item.description}</p>
                 </div>
               </motion.div>
             ))}

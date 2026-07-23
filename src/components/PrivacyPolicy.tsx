@@ -43,7 +43,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
       {
         heading: "3. Cookies and Similar Technologies",
         body: [
-          "This website uses only the minimum cookies and local storage necessary for the site to function (for example, remembering your preferred language). We do not currently use third-party advertising or cross-site tracking cookies.",
+          "This website uses only the minimum cookies and similar technologies necessary for the site to function. We do not currently use third-party advertising or cross-site tracking cookies.",
           "If we add analytics in the future (such as Google Analytics), we will update this Policy and, where required, request your consent before activation.",
           "You can control or delete cookies through your browser settings at any time. Disabling cookies may affect minor preferences but will not block access to the site.",
         ],
@@ -192,7 +192,7 @@ export default function PrivacyPolicy({ lang }: PrivacyPolicyProps) {
         <div className="max-w-3xl mx-auto">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-primary/70 hover:text-primary transition-colors text-sm font-sans mb-8"
+            className="inline-flex items-center gap-2 text-primary/80 hover:text-primary transition-colors text-sm font-sans mb-8"
           >
             <ChevronLeft size={16} />
             {backLabel}
@@ -206,7 +206,7 @@ export default function PrivacyPolicy({ lang }: PrivacyPolicyProps) {
             <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-3 tracking-tight">
               {title}
             </h1>
-            <p className="text-text-dark/50 text-sm font-sans mb-12 uppercase tracking-widest">
+            <p className="text-text-dark/70 text-sm font-sans mb-12 uppercase tracking-widest">
               {lastUpdatedLabel}: {LAST_UPDATED}
             </p>
 
@@ -221,7 +221,7 @@ export default function PrivacyPolicy({ lang }: PrivacyPolicyProps) {
                     <h2 className="text-xl md:text-2xl font-serif font-bold text-primary mb-4">
                       {section.heading}
                     </h2>
-                    <div className="space-y-4 text-text-dark/75 font-sans leading-relaxed">
+                    <div className="space-y-4 text-text-dark/80 font-sans leading-relaxed">
                       {section.body.map((p, idx) => (
                         <p key={idx}>{p}</p>
                       ))}
@@ -231,7 +231,7 @@ export default function PrivacyPolicy({ lang }: PrivacyPolicyProps) {
               </div>
             </div>
 
-            <p className="mt-8 text-xs text-text-dark/40 font-sans italic text-center">
+            <p className="mt-8 text-xs text-text-dark/70 font-sans italic text-center">
               {lang === "en"
                 ? "This document is provided for general informational purposes only and does not constitute legal advice. Please consult a qualified attorney to ensure it meets your specific legal requirements."
                 : "Tài liệu này chỉ mang tính chất tham khảo thông tin chung và không thay thế cho tư vấn pháp lý. Vui lòng tham khảo luật sư có chuyên môn để đảm bảo phù hợp với yêu cầu pháp lý cụ thể của bạn."}

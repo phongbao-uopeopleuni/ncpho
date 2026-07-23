@@ -24,10 +24,14 @@ export default function About({ lang }: AboutProps) {
             <div className="aspect-[4/5] bg-bg-cream rounded-full overflow-hidden shadow-2xl relative z-10 border border-primary/5 p-3 sm:p-4">
               <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full">
                 <img
-                  src={`${import.meta.env.BASE_URL}home.png`}
+                  src={`${import.meta.env.BASE_URL}home.webp`}
+                  srcSet={`${import.meta.env.BASE_URL}home-360.webp 360w, ${import.meta.env.BASE_URL}home.webp 540w`}
+                  sizes="(min-width: 1024px) 45vw, 92vw"
                   alt=""
                   className="absolute left-1/2 top-1/2 h-[92%] w-[92%] max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 object-contain object-center"
                   decoding="async"
+                  width="540"
+                  height="540"
                 />
                 {/* Wash + vignette: giữ tone kem/xanh mềm, chữ vẫn rõ */}
                 <div
@@ -44,7 +48,7 @@ export default function About({ lang }: AboutProps) {
                   <span className="serif-italic mb-2 block text-2xl text-primary drop-shadow-[0_1px_12px_rgba(255,250,245,0.9)] md:text-3xl">
                     {lang === "en" ? "Our Story" : "Câu chuyện"}
                   </span>
-                  <p className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-accent-gold drop-shadow-[0_1px_8px_rgba(255,250,245,0.85)]">
+                  <p className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-accent-gold-text drop-shadow-[0_1px_8px_rgba(255,250,245,0.85)]">
                     {lang === "en" ? "Traditional Roots" : "Nguồn cội truyền thống"}
                   </p>
                 </div>
@@ -63,12 +67,12 @@ export default function About({ lang }: AboutProps) {
             className="flex flex-col space-y-8"
           >
             <div>
-              <span className="text-accent-gold font-bold uppercase tracking-[0.3em] text-xs mb-4 block">{lang === "en" ? "About Us" : "Về chúng tôi"}</span>
+              <span className="text-accent-gold-text font-bold uppercase tracking-[0.3em] text-xs mb-4 block">{lang === "en" ? "About Us" : "Về chúng tôi"}</span>
               <h2 className="text-4xl md:text-5xl text-primary font-bold leading-tight">
                 {lang === "en" ? (
-                  <>Authentic Vietnamese <span className="text-accent-gold italic font-serif">Taste</span> <br /> in Washington, NC</>
+                  <>Authentic Vietnamese <span className="text-accent-gold-text italic font-serif">Taste</span> <br /> in Washington, NC</>
                 ) : (
-                  <>Hương vị Việt <span className="text-accent-gold italic font-serif">Đích thực</span> <br /> tại Washington, NC</>
+                  <>Hương vị Việt <span className="text-accent-gold-text italic font-serif">Đích thực</span> <br /> tại Washington, NC</>
                 )}
               </h2>
             </div>
@@ -79,12 +83,12 @@ export default function About({ lang }: AboutProps) {
             
             <div className="grid grid-cols-2 gap-8 py-6 border-y border-primary/10">
               <div>
-                <h4 className="text-accent-gold font-bold text-2xl mb-1">24+ {lang === "en" ? "Hours" : "Giờ"}</h4>
-                <p className="text-sm text-text-dark/60 font-sans uppercase tracking-wider">{lang === "en" ? "Slow Cooked Broth" : "Hầm nước dùng"}</p>
+                <p className="text-accent-gold-text font-serif font-bold text-2xl mb-1">24+ {lang === "en" ? "Hours" : "Giờ"}</p>
+                <p className="text-sm text-text-dark/70 font-sans uppercase tracking-wider">{lang === "en" ? "Slow Cooked Broth" : "Hầm nước dùng"}</p>
               </div>
               <div>
-                <h4 className="text-accent-gold font-bold text-2xl mb-1">100%</h4>
-                <p className="text-sm text-text-dark/60 font-sans uppercase tracking-wider">{lang === "en" ? "Fresh Ingredients" : "Nguyên liệu tươi"}</p>
+                <p className="text-accent-gold-text font-serif font-bold text-2xl mb-1">100%</p>
+                <p className="text-sm text-text-dark/70 font-sans uppercase tracking-wider">{lang === "en" ? "Fresh Ingredients" : "Nguyên liệu tươi"}</p>
               </div>
             </div>
 

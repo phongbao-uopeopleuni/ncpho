@@ -42,10 +42,16 @@ export default function Contact({ lang }: ContactProps) {
                   />
                   <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-white shadow-[0_25px_60px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/25">
                     <img
-                      src={`${import.meta.env.BASE_URL}home.png`}
+                      src={`${import.meta.env.BASE_URL}home.webp`}
+                      srcSet={`${import.meta.env.BASE_URL}home-360.webp 360w, ${import.meta.env.BASE_URL}home.webp 540w`}
+                      sizes="(min-width: 640px) 288px, 256px"
                       alt={lang === "en" ? "North Carolina Phở restaurant" : "Nhà hàng North Carolina Phở"}
                       className="h-full w-full object-contain object-center p-3 sm:p-4"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
+                      width="540"
+                      height="540"
                     />
                     <div
                       className="pointer-events-none absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-accent-gold/25"
@@ -60,9 +66,9 @@ export default function Contact({ lang }: ContactProps) {
                     <MapPin className="text-accent-gold" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg mb-1">{lang === "en" ? "Location" : "Vị trí"}</h4>
-                    <p className="text-white/70">{BRAND_INFO.address}</p>
-                    <p className="text-white/70">{BRAND_INFO.location}</p>
+                    <h3 className="font-bold text-lg mb-1">{lang === "en" ? "Location" : "Vị trí"}</h3>
+                    <p className="text-white/80">{BRAND_INFO.address}</p>
+                    <p className="text-white/80">{BRAND_INFO.location}</p>
                   </div>
                 </div>
 
@@ -71,8 +77,8 @@ export default function Contact({ lang }: ContactProps) {
                     <Phone className="text-accent-gold" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg mb-1">{lang === "en" ? "Phone" : "Điện thoại"}</h4>
-                    <p className="text-white/70">{BRAND_INFO.phone}</p>
+                    <h3 className="font-bold text-lg mb-1">{lang === "en" ? "Phone" : "Điện thoại"}</h3>
+                    <p className="text-white/80">{BRAND_INFO.phone}</p>
                   </div>
                 </div>
 
@@ -81,9 +87,9 @@ export default function Contact({ lang }: ContactProps) {
                     <Clock className="text-accent-gold" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg mb-1">{lang === "en" ? "Opening Hours" : "Giờ mở cửa"}</h4>
+                    <h3 className="font-bold text-lg mb-1">{lang === "en" ? "Opening Hours" : "Giờ mở cửa"}</h3>
                     {hours.map((h) => (
-                      <p key={h.day} className="text-white/70">{h.day}: {h.time}</p>
+                      <p key={h.day} className="text-white/80">{h.day}: {h.time}</p>
                     ))}
                   </div>
                 </div>

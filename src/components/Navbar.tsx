@@ -95,7 +95,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
                 className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide transition-all ${
                   lang === "en"
                     ? "bg-neutral-900 text-white shadow-sm"
-                    : "text-neutral-500 hover:text-neutral-900"
+                    : "text-neutral-600 hover:text-neutral-900"
                 }`}
               >
                 EN
@@ -106,7 +106,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
                 className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide transition-all ${
                   lang === "vi"
                     ? "bg-neutral-900 text-white shadow-sm"
-                    : "text-neutral-500 hover:text-neutral-900"
+                    : "text-neutral-600 hover:text-neutral-900"
                 }`}
               >
                 VN
@@ -120,7 +120,6 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
           <Link
             to="/"
             className="font-serif text-base font-semibold tracking-tight text-primary transition-colors hover:text-primary/80 sm:text-lg"
-            aria-label={BRAND_INFO.name}
             onClick={() => setIsOpen(false)}
           >
             NC Phở
@@ -130,7 +129,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
               type="button"
               onClick={() => setLang(lang === "en" ? "vi" : "en")}
               className="flex items-center gap-1 rounded-full border border-white/40 bg-white/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-neutral-800 shadow-sm backdrop-blur-sm"
-              aria-label={lang === "en" ? "Switch to Vietnamese" : "Chuyển sang tiếng Anh"}
+              aria-label={lang === "en" ? "EN, switch to Vietnamese" : "VN, chuyển sang tiếng Anh"}
             >
               <Globe size={12} strokeWidth={2} />
               {lang === "en" ? "EN" : "VN"}

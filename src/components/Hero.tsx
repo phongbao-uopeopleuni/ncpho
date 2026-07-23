@@ -35,7 +35,7 @@ export default function Hero({ lang }: HeroProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <span className="serif-italic text-accent-gold text-lg md:text-xl mb-4 block tracking-wide">
+          <span className="serif-italic text-accent-gold-text text-lg md:text-xl mb-4 block tracking-wide">
             {BRAND_INFO.tagline[lang]}
           </span>
           <h1 className="text-5xl md:text-8xl font-serif font-bold text-primary leading-tight mb-6">
@@ -51,7 +51,7 @@ export default function Hero({ lang }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-accent-gold italic"
+              className="text-accent-gold-text italic"
             >
               Phở
             </motion.span>

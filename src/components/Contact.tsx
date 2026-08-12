@@ -5,7 +5,7 @@
 
 import { motion } from "motion/react";
 import { MapPin, Phone, Clock } from "lucide-react";
-import { BRAND_INFO, Language } from "../constants";
+import { BRAND_INFO, GOOGLE_MAPS_EMBED_URL, GOOGLE_MAPS_URL, Language } from "../constants";
 
 interface ContactProps {
   lang: Language;
@@ -68,7 +68,6 @@ export default function Contact({ lang }: ContactProps) {
                   <div>
                     <h3 className="font-bold text-lg mb-1">{lang === "en" ? "Location" : "Vị trí"}</h3>
                     <p className="text-white/80">{BRAND_INFO.address}</p>
-                    <p className="text-white/80">{BRAND_INFO.location}</p>
                   </div>
                 </div>
 
@@ -110,15 +109,27 @@ export default function Contact({ lang }: ContactProps) {
                 <h3 className="text-2xl font-serif font-bold text-primary mb-4 text-center">{lang === "en" ? "Where are we?" : "Chúng tôi ở đâu?"}</h3>
                 <p className="text-center text-text-dark/70 mb-8 max-w-sm">
                   {lang === "en" 
-                    ? "Located in the heart of downtown Washington, NC. Easy to find with ample parking space."
-                    : "Tọa lạc tại trung tâm thành phố Washington, NC. Dễ dàng tìm thấy và có chỗ đậu xe rộng rãi."}
+                    ? `Find us at ${BRAND_INFO.address}. Easy access with convenient parking nearby.`
+                    : `Tìm chúng tôi tại ${BRAND_INFO.address}. Dễ dàng di chuyển và có chỗ đậu xe thuận tiện.`}
                 </p>
-                <div className="w-full h-64 bg-primary/5 rounded-2xl border-2 border-dashed border-primary/20 flex items-center justify-center">
-                  <span className="serif-italic text-primary opacity-30 text-lg">{lang === "en" ? "Map loading..." : "Bản đồ đang tải..."}</span>
+                <div className="h-72 w-full overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-inner">
+                  <iframe
+                    src={GOOGLE_MAPS_EMBED_URL}
+                    title={lang === "en" ? "Map to North Carolina Phở" : "Bản đồ đến North Carolina Phở"}
+                    className="h-full w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
                 </div>
-                <button className="mt-8 bg-accent-gold text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-accent-gold/20 hover:scale-105 transition-all">
+                <a
+                  href={GOOGLE_MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-8 inline-flex items-center justify-center rounded-full bg-accent-gold-text px-8 py-3 text-center font-bold text-white shadow-lg shadow-accent-gold/20 transition-all hover:scale-105 hover:bg-primary"
+                >
                   {lang === "en" ? "Get Directions on Google Maps" : "Chỉ đường qua Google Maps"}
-                </button>
+                </a>
             </div>
           </motion.div>
         </div>

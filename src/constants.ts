@@ -15,6 +15,12 @@ export type MenuDishItem = {
   variations?: Record<string, string>;
 };
 
+const RESTAURANT_ADDRESS = "1507 Carolina Ave, Washington, NC 27889";
+
+export const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(RESTAURANT_ADDRESS)}`;
+export const GOOGLE_MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(RESTAURANT_ADDRESS)}&output=embed`;
+export const ORDER_ONLINE_URL: string = "";
+
 export const BRAND_INFO = {
   name: "North Carolina Phở",
   tagline: {
@@ -22,7 +28,7 @@ export const BRAND_INFO = {
     vi: "Ngôi Nhà Phở Việt Đích Thực"
   },
   location: "Washington, NC",
-  address: "109 Greenville Blvd SE Suite #100, Greenville, NC 27858",
+  address: RESTAURANT_ADDRESS,
   /** Display string for UI */
   phone: "(+1) 252-756-7272",
   /** E.164 without `tel:` prefix — use for `href="tel:..."` */
@@ -66,24 +72,6 @@ export const BRAND_INFO = {
       { name: "Thư viện ảnh", href: "/gallery" },
       { name: "Về chúng tôi", href: "/#about" },
       { name: "Liên hệ", href: "/#contact" },
-    ]
-  },
-  gallery: {
-    en: [
-      { id: 1, title: "Signature Phở", category: "Food", description: "Our 24-hour slow-cooked beef broth with premium steak.", image: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&q=80&w=800" },
-      { id: 2, title: "Authentic Bánh Mì", category: "Food", description: "Crispy baguette with house-made pâté and grilled pork.", image: "https://images.unsplash.com/photo-1600454021970-351feb4a503e?auto=format&fit=crop&q=80&w=800" },
-      { id: 3, title: "Restaurant Ambiance", category: "Interior", description: "A warm and inviting space for family and friends.", image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&q=80&w=800" },
-      { id: 4, title: "Vietnamese Coffee", category: "Drinks", description: "Traditional drip coffee with condensed milk.", image: "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?auto=format&fit=crop&q=80&w=800" },
-      { id: 5, title: "Spring Rolls", category: "Food", description: "Fresh rice paper rolls with shrimp and herbs.", image: "https://images.unsplash.com/photo-1533727937480-da3a97967e95?auto=format&fit=crop&q=80&w=800" },
-      { id: 6, title: "Bún Chả", category: "Food", description: "Grilled pork with vermicelli noodles and dipping sauce.", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=800" },
-    ],
-    vi: [
-      { id: 1, title: "Phở Đặc Biệt", category: "Món ăn", description: "Nước dùng bò hầm 24 giờ với thịt bò thượng hạng.", image: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&q=80&w=800" },
-      { id: 2, title: "Bánh Mì Truyền Thống", category: "Món ăn", description: "Bánh mì giòn rụm với pate nhà làm và thịt nướng.", image: "https://images.unsplash.com/photo-1600454021970-351feb4a503e?auto=format&fit=crop&q=80&w=800" },
-      { id: 3, title: "Không Gian Nhà Hàng", category: "Không gian", description: "Không gian ấm cúng dành cho gia đình và bạn bè.", image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&q=80&w=800" },
-      { id: 4, title: "Cà Phê Sữa Đá", category: "Đồ uống", description: "Cà phê phin truyền thống với sữa đặc.", image: "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?auto=format&fit=crop&q=80&w=800" },
-      { id: 5, title: "Gỏi Cuốn Tôm", category: "Món ăn", description: "Cuốn bánh tráng tươi mát với tôm và rau thơm.", image: "https://images.unsplash.com/photo-1533727937480-da3a97967e95?auto=format&fit=crop&q=80&w=800" },
-      { id: 6, title: "Bún Chả Hà Nội", category: "Món ăn", description: "Thịt heo nướng than hoa ăn kèm bún và nước chấm.", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=800" },
     ]
   }
 };
@@ -1423,4 +1411,3 @@ export const MENU_CATEGORIES = {
     }
   ]
 };
-

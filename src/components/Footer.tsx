@@ -67,7 +67,7 @@ export default function Footer({ lang }: FooterProps) {
               rel="noreferrer"
               className="normal-case tracking-normal text-accent-gold-text transition-colors hover:text-primary"
             >
-              web designer by PhongB
+              Website designed by PhongB
             </a>
           </div>
         </div>

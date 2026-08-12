@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { Phone } from "lucide-react";
+import { MapPin, Phone, ShoppingBag } from "lucide-react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -17,7 +17,7 @@ import GalleryPage from "./components/GalleryPage";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import SEO from "./components/SEO";
-import { Language, BRAND_INFO } from "./constants";
+import { BRAND_INFO, GOOGLE_MAPS_URL, Language, ORDER_ONLINE_URL } from "./constants";
 
 function Home({ lang }: { lang: Language }) {
   return (
@@ -79,14 +79,48 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Floating Call Button for Mobile */}
-      <a
-        href={`tel:${BRAND_INFO.phoneTel}`}
-        className="fixed bottom-6 right-6 z-50 md:hidden bg-primary text-white p-4 rounded-full shadow-2xl border-2 border-white animate-bounce flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
-        aria-label="Call Us"
+      <nav
+        className="fixed bottom-4 right-3 z-50 flex flex-col items-end gap-2 sm:bottom-6 sm:right-6 sm:gap-2.5"
+        aria-label={lang === "en" ? "Quick actions" : "Thao tác nhanh"}
       >
-        <Phone size={24} />
-      </a>
+        <a
+          href={ORDER_ONLINE_URL || undefined}
+          target={ORDER_ONLINE_URL ? "_blank" : undefined}
+          rel={ORDER_ONLINE_URL ? "noopener noreferrer" : undefined}
+          aria-disabled={!ORDER_ONLINE_URL}
+          title={ORDER_ONLINE_URL ? undefined : lang === "en" ? "Online ordering coming soon" : "Liên kết đặt món sẽ sớm được cập nhật"}
+          className={`flex h-12 w-44 items-center rounded-full border-2 border-white/80 bg-accent-gold-text px-4 text-white shadow-[0_10px_30px_rgba(140,109,31,0.28)] transition-transform sm:h-13 sm:w-48 sm:px-5 ${ORDER_ONLINE_URL ? "hover:scale-105 hover:bg-primary active:scale-95" : "cursor-not-allowed"}`}
+        >
+          <ShoppingBag size={18} className="text-white/90" strokeWidth={2.25} aria-hidden />
+          <span className="flex-1 whitespace-nowrap text-center text-[11px] font-bold uppercase tracking-[0.13em] sm:text-xs">
+            {lang === "en" ? "Order Online" : "Đặt món"}
+          </span>
+        </a>
+
+        <a
+          href={`tel:${BRAND_INFO.phoneTel}`}
+          className="flex h-12 w-38 items-center rounded-full border-2 border-white/70 bg-primary px-4 text-white shadow-[0_10px_28px_rgba(27,67,50,0.25)] transition-transform hover:scale-105 hover:bg-[#123326] active:scale-95 sm:h-13 sm:w-42 sm:px-5"
+          aria-label={lang === "en" ? "Call Us" : "Gọi ngay"}
+        >
+          <Phone size={18} className="text-accent-gold" fill="currentColor" strokeWidth={2.25} aria-hidden />
+          <span className="flex-1 whitespace-nowrap text-center text-[11px] font-bold uppercase tracking-[0.13em] sm:text-xs">
+            {lang === "en" ? "Call Us" : "Gọi ngay"}
+          </span>
+        </a>
+
+        <a
+          href={GOOGLE_MAPS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex h-12 w-44 items-center rounded-full border-2 border-primary/20 bg-bg-cream px-4 text-primary shadow-[0_10px_28px_rgba(27,67,50,0.18)] transition-transform hover:scale-105 hover:border-primary hover:bg-white active:scale-95 sm:h-13 sm:w-48 sm:px-5"
+          aria-label={lang === "en" ? "Directions" : "Chỉ đường"}
+        >
+          <MapPin size={18} className="text-accent-gold-text" strokeWidth={2.25} aria-hidden />
+          <span className="flex-1 whitespace-nowrap text-center text-[11px] font-bold uppercase tracking-[0.13em] sm:text-xs">
+            {lang === "en" ? "Directions" : "Chỉ đường"}
+          </span>
+        </a>
+      </nav>
 
       <Footer lang={lang} />
     </div>

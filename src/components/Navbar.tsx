@@ -7,9 +7,7 @@ import { motion } from "motion/react";
 import { Menu as MenuIcon, X, Globe } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { BRAND_INFO, Language } from "../constants";
-
-const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(BRAND_INFO.address)}`;
+import { BRAND_INFO, GOOGLE_MAPS_URL, Language } from "../constants";
 
 function SocialIconLink({
   href,
@@ -67,7 +65,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
               </SocialIconLink>
-              <SocialIconLink href={mapsUrl} label={lang === "en" ? "Google Maps" : "Google Maps"}>
+              <SocialIconLink href={GOOGLE_MAPS_URL} label="Google Maps">
                 <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden>
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                 </svg>
@@ -177,7 +175,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
               </SocialIconLink>
-              <SocialIconLink href={mapsUrl} label="Maps">
+              <SocialIconLink href={GOOGLE_MAPS_URL} label="Google Maps">
                 <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden>
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                 </svg>

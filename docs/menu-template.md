@@ -5,8 +5,8 @@ Hosting stays on Vercel. Production URLs:
 - English: https://ncpho-ten.vercel.app/menu
 - Vietnamese: https://ncpho-ten.vercel.app/vi/menu
 
-GitHub stores source and runs checks against Vercel's root-path routing. The legacy
-GitHub Pages publishing workflow is manual only. The live-site monitor targets
+GitHub stores source and runs checks against Vercel's root-path routing. The obsolete
+GitHub Pages publishing workflow has been removed. The live-site monitor targets
 the Vercel origin after successful checks on main, and on its existing schedule.
 
 `src/components/MenuCatalog.tsx` is the independent menu template. It uses the full

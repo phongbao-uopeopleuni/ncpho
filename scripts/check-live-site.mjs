@@ -8,18 +8,12 @@
  * tag or static fallback — the kind of outage (a blank page) that a plain HTTP 200 hides.
  * Retries so a check right after a deploy tolerates the hosting platform's publish delay.
  */
-const url = process.argv[2];
-if (!url) {
-  console.error("usage: node scripts/check-live-site.mjs <url>");
-  process.exit(2);
-}
-const attempts = Number(process.env.CHECK_ATTEMPTS || 5);
-const delayMs = Number(process.env.CHECK_DELAY_MS || 30_000);
+import { pathToFileURL } from "node:url";
 
 const get = (target) => fetch(target, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
 
-async function check() {
-  const page = await get(url);
+export async function checkLiveSite(url, request = get) {
+  const page = await request(url);
   if (page.status !== 200) return [`page returned HTTP ${page.status}`];
   const html = await page.text();
 
@@ -31,9 +25,10 @@ async function check() {
   const assets = [...html.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)="([^"]*\/assets\/[^"]+\.(?:js|css))"/g)]
     .map((m) => new URL(m[1], url).href);
   if (!assets.some((asset) => asset.endsWith(".js"))) problems.push("no JS bundle referenced");
+  if (!assets.some((asset) => asset.endsWith(".css"))) problems.push("no CSS stylesheet referenced");
 
   for (const asset of assets) {
-    const response = await get(asset);
+    const response = await request(asset);
     const type = response.headers.get("content-type") ?? "";
     if (response.status !== 200) problems.push(`${asset} returned HTTP ${response.status}`);
     else if (asset.endsWith(".css") && !type.includes("css")) problems.push(`${asset} served as "${type}"`);
@@ -45,19 +40,31 @@ async function check() {
 
 // Exit via process.exitCode, not process.exit(): exiting while fetch's keep-alive sockets are
 // closing crashes Node on Windows (libuv "UV_HANDLE_CLOSING" assertion) with a wrong exit code.
-process.exitCode = 1;
-for (let attempt = 1; attempt <= attempts; attempt++) {
-  let problems;
-  try {
-    problems = await check();
-  } catch (error) {
-    problems = [`request failed: ${error instanceof Error ? error.message : String(error)}`];
+async function main() {
+  const url = process.argv[2];
+  if (!url) {
+    console.error("usage: node scripts/check-live-site.mjs <url>");
+    process.exitCode = 2;
+    return;
   }
-  if (problems.length === 0) {
-    console.log(`OK: ${url} and its JS/CSS bundles load (attempt ${attempt}/${attempts})`);
-    process.exitCode = 0;
-    break;
+  const attempts = Number(process.env.CHECK_ATTEMPTS || 5);
+  const delayMs = Number(process.env.CHECK_DELAY_MS || 30_000);
+  process.exitCode = 1;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    let problems;
+    try {
+      problems = await checkLiveSite(url);
+    } catch (error) {
+      problems = [`request failed: ${error instanceof Error ? error.message : String(error)}`];
+    }
+    if (problems.length === 0) {
+      console.log(`OK: ${url} and its JS/CSS bundles load (attempt ${attempt}/${attempts})`);
+      process.exitCode = 0;
+      break;
+    }
+    console.error(`attempt ${attempt}/${attempts} failed:\n- ${problems.join("\n- ")}`);
+    if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
-  console.error(`attempt ${attempt}/${attempts} failed:\n- ${problems.join("\n- ")}`);
-  if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, delayMs));
 }
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();

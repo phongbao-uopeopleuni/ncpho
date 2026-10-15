@@ -145,11 +145,16 @@ if (!chromePath) {
 const profileRoot = args.find(a => a.startsWith("--profile-root="))?.slice("--profile-root=".length) || tmpdir();
 const profile = mkdtempSync(join(resolve(profileRoot), "ncpho-csp-"));
 const chrome = spawn(chromePath, [
-  "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+  "--headless=new", "--disable-gpu", "--disable-dev-shm-usage", "--no-first-run", "--no-default-browser-check",
   "--disable-background-networking", "--disable-component-update", "--disable-sync",
   "--disable-extensions", "--disable-default-apps", "--metrics-recording-only", "--mute-audio",
   "--remote-debugging-port=0", `--user-data-dir=${profile}`, "about:blank",
-], { stdio: "ignore", windowsHide: true });
+], { stdio: ["ignore", "ignore", "pipe"], windowsHide: true });
+let chromeStderr = "";
+let chromeSpawnError;
+chrome.stderr.setEncoding("utf8");
+chrome.stderr.on("data", chunk => { chromeStderr = (chromeStderr + chunk).slice(-8192); });
+chrome.once("error", error => { chromeSpawnError = error; });
 
 let ws;
 const checks = [];
@@ -196,14 +201,19 @@ async function step(group, name, fn) {
 
 try {
   let port;
-  for (let i = 0; i < 100 && !port; i++) {
-    try { port = readFileSync(join(profile, "DevToolsActivePort"), "utf8").split("\n")[0].trim(); } catch { await sleep(100); }
+  const launchDeadline = Date.now() + 30_000;
+  while (Date.now() < launchDeadline && !port && chrome.exitCode === null && !chromeSpawnError) {
+    try { port = readFileSync(join(profile, "DevToolsActivePort"), "utf8").split("\n")[0].trim(); } catch {}
+    // Chrome may announce its endpoint before the profile's port file is visible.
+    port ||= /DevTools listening on ws:\/\/127\.0\.0\.1:(\d+)\//.exec(chromeStderr)?.[1];
+    if (!port) await sleep(100);
   }
-  if (!port) throw new Error("Chrome did not expose a DevTools port");
+  if (!port) throw new Error(`Chrome did not expose a DevTools port within 30s (exit=${chrome.exitCode}, signal=${chrome.signalCode}, spawn=${chromeSpawnError?.message || "ok"})\n${chromeStderr.trim() || "no browser diagnostics"}`);
   let target;
   for (let i = 0; i < 50 && !target; i++) {
     try { target = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find((t) => t.type === "page"); } catch { await sleep(100); }
   }
+  if (!target) throw new Error(`Chrome started on port ${port} but exposed no page target\n${chromeStderr.trim()}`);
   ws = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
 

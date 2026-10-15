@@ -58,7 +58,6 @@ export default function MenuCatalog({ lang, selectedCategory = "all", onSelectCa
               </div>
             </section>
           ))}
-          <p className="menu-price-note">{copy.note}</p>
         </div>
       </div>
     </section>

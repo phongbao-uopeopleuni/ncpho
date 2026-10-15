@@ -10,13 +10,13 @@ export const menuCopy = {
     eyebrow: "Our Menu", heading: "Vietnamese Culinary Essence",
     title: "Vietnamese Menu — Phở, Rice & House Specials",
     description: "Explore the NC PHO menu in Washington, NC: Vietnamese phở, hot soup, appetizers, rice plates, vegetarian favorites and drinks, with prices and options.",
-    categories: "Menu categories", all: "Full menu", from: "from", note: "All prices are in USD.",
+    categories: "Menu categories", all: "Full menu", from: "from",
   },
   vi: {
     eyebrow: "Thực đơn", heading: "Tinh hoa Ẩm thực Việt",
     title: "Thực đơn Việt — Phở, Cơm & Món đặc biệt",
     description: "Khám phá thực đơn NC PHO tại Washington, NC: phở, súp nóng, món khai vị, cơm, món chay và đồ uống, kèm giá và các lựa chọn.",
-    categories: "Danh mục thực đơn", all: "Toàn bộ thực đơn", from: "từ", note: "Giá được niêm yết bằng USD.",
+    categories: "Danh mục thực đơn", all: "Toàn bộ thực đơn", from: "từ",
   },
 };
 export function priceNumber(value: string): number | undefined {

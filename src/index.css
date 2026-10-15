@@ -44,7 +44,6 @@
 .menu-options > div { display: flex; justify-content: space-between; gap: 16px; }
 .menu-options dd { color: #8C6D1F; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .menu-subheading { margin: 26px 12px 8px; padding-bottom: 12px; border-bottom: 1px solid rgb(27 67 50 / .15); font-family: "Inter", sans-serif; color: #8C6D1F; font-size: 14px; font-weight: 600; }
-.menu-price-note { padding: 0 12px; font-size: 12px; color: rgb(45 45 45 / .75); }
 .menu-home-preview { padding: 80px 24px; max-width: 840px; margin: 0 auto; text-align: center; }
 .menu-home-preview > p:not(.menu-eyebrow) { margin: 20px auto 28px; max-width: 560px; line-height: 1.8; color: rgb(45 45 45 / .75); }
 .menu-full-link { display: inline-flex; min-height: 48px; gap: 18px; align-items: center; padding: 12px 24px; border: 1px solid #1B4332; border-radius: 999px; color: #1B4332; font-size: 14px; font-weight: 500; transition: background-color 160ms ease; }

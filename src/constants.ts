@@ -636,6 +636,8 @@ export const MENU_CATEGORIES = {
           name: "Cashew Chicken with Steam Rice",
           variations: { "Steamed Rice": "$16.50", "Fried Rice": "$21.25" },
         },
+        { id: "d96", menuCode: "96", name: "Ice Carrot Cake", price: "$5.50" },
+        { id: "d97", menuCode: "97", name: "Cheesecake", price: "$5.50" },
       ]
     },
     {
@@ -654,8 +656,6 @@ export const MENU_CATEGORIES = {
             Sprite: "$2.50",
             "Dr.Pepper": "$2.50",
             Fanta: "$2.50",
-            "Minute Maid Lemonade": "$2.50",
-            "HI - C": "$2.50",
             Powerade: "$2.50",
             Sweetened: "$2.50",
             Unsweetened: "$2.50",
@@ -713,8 +713,6 @@ export const MENU_CATEGORIES = {
             "Milk Tea": "$7.50",
           },
         },
-        { id: "d96", menuCode: "96", name: "Ice Carrot Cake", price: "$5.50" },
-        { id: "d97", menuCode: "97", name: "Cheesecake", price: "$5.50" },
         { id: "d98", menuCode: "98", name: "Tamarind Tea", price: "$7.50" },
         { id: "d99", menuCode: "99", name: "Peach Tea", price: "$7.50" },
       ]
@@ -1286,6 +1284,8 @@ export const MENU_CATEGORIES = {
           name: "Gà xào hạt điều kèm cơm",
           variations: { "Steamed Rice": "$16.50", "Fried Rice": "$21.25" },
         },
+        { id: "d96", menuCode: "96", name: "Bánh cà rốt đông lạnh", price: "$5.50" },
+        { id: "d97", menuCode: "97", name: "Bánh phô mai", price: "$5.50" },
       ]
     },
     {
@@ -1304,8 +1304,6 @@ export const MENU_CATEGORIES = {
             Sprite: "$2.50",
             "Dr.Pepper": "$2.50",
             Fanta: "$2.50",
-            "Minute Maid Lemonade": "$2.50",
-            "HI - C": "$2.50",
             Powerade: "$2.50",
             "Ngọt": "$2.50",
             "Không ngọt": "$2.50",
@@ -1363,8 +1361,6 @@ export const MENU_CATEGORIES = {
             "Trà sữa": "$7.50",
           },
         },
-        { id: "d96", menuCode: "96", name: "Bánh cà rốt đông lạnh", price: "$5.50" },
-        { id: "d97", menuCode: "97", name: "Bánh phô mai", price: "$5.50" },
         { id: "d98", menuCode: "98", name: "Trà me", price: "$7.50" },
         { id: "d99", menuCode: "99", name: "Trà đào", price: "$7.50" },
       ]

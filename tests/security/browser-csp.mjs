@@ -629,7 +629,7 @@ try {
     await navigate(`${site}/__menu_nojs__`);
     await sleep(400);
     const staticMenu = await evaluate("({ items: document.querySelectorAll('[data-menu-item]').length, visible: [...document.querySelectorAll('[data-menu-item]')].filter(e => e.getClientRects().length).length, categories: document.querySelectorAll('.menu-category-section').length, schema: !!document.querySelector('[data-menu-schema-fallback]'), options: document.querySelectorAll('.menu-options > div').length })");
-    record("resilience", "all 151 entries, 147 options and 11 categories are readable without the app bundle", staticMenu.items === 151 && staticMenu.visible === 151 && staticMenu.options === 147 && staticMenu.categories === 11 && staticMenu.schema, staticMenu);
+    record("resilience", "all 151 entries, 145 options and 11 categories are readable without the app bundle", staticMenu.items === 151 && staticMenu.visible === 151 && staticMenu.options === 145 && staticMenu.categories === 11 && staticMenu.schema, staticMenu);
     await click(await point("document.querySelector('a[data-category=\"pho\"]')"));
     record("resilience", "native category links still work without JavaScript", await evaluate("location.hash === '#menu-pho'"));
   });

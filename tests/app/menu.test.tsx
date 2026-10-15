@@ -12,14 +12,14 @@ import { migrateLegacyUrl } from "../../src/routing";
 const source = readFileSync(new URL("../../index.html", import.meta.url), "utf8");
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#x27;" })[c]!);
 
-test("both languages retain all 151 entries, 147 options and 11 categories with identical prices", () => {
+test("both languages retain all 151 entries, 145 options and 11 categories with identical prices", () => {
   const en = menuCategories("en");
   const vi = menuCategories("vi");
   assert.equal(en.length, 11);
   assert.deepEqual(en.map(c => c.id), vi.map(c => c.id));
   for (const lang of ["en", "vi"] as const) {
     assert.equal(menuDishes(lang).length, 151);
-    assert.equal(menuDishes(lang).reduce((n, item) => n + Object.keys(item.variations || {}).length, 0), 147);
+    assert.equal(menuDishes(lang).reduce((n, item) => n + Object.keys(item.variations || {}).length, 0), 145);
     assert.equal(new Set(menuDishes(lang).map(item => item.id)).size, 151);
   }
   assert.deepEqual(menuDishes("en").map(i => [i.id, i.menuCode, i.price, Object.values(i.variations || {})]),

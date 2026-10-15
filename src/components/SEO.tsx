@@ -4,10 +4,12 @@
  */
 
 import { Helmet } from "react-helmet-async";
-import { Language } from "../constants";
+import { useEffect } from "react";
+import { BRAND_INFO, Language } from "../constants";
 
 interface SEOProps {
   title: string;
+  titleBrand?: string;
   description: string;
   canonical?: string;
   lang: Language;
@@ -15,10 +17,15 @@ interface SEOProps {
   image?: string;
 }
 
-export default function SEO({ title, description, canonical, lang, type = "website", image }: SEOProps) {
-  const siteName = "North Carolina Phở";
-  const fullTitle = `${title} | ${siteName}`;
+export default function SEO({ title, titleBrand, description, canonical, lang, type = "website", image }: SEOProps) {
+  const siteName = BRAND_INFO.name;
+  const fullTitle = `${title} | ${titleBrand ?? siteName}`;
   const url = canonical || "https://ncpho.com";
+
+  useEffect(() => {
+    // React 19 renders the active metadata; retire the initial HTML fallbacks.
+    document.querySelectorAll("[data-seo-fallback]").forEach((element) => element.remove());
+  }, []);
 
   return (
     <Helmet htmlAttributes={{ lang }}>

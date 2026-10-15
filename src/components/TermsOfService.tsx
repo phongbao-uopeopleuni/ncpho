@@ -23,7 +23,7 @@ interface Section {
 const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
   en: {
     intro:
-      "Welcome to North Carolina Phở. These Terms of Service (\"Terms\") govern your use of our website and the information presented on it. By accessing or using this site, you agree to be bound by these Terms. If you do not agree, please do not use the site.",
+      "Welcome to NC PHO VIETNAMESE NOODLE HOUSE. These Terms of Service (\"Terms\") govern your use of our website and the information presented on it. By accessing or using this site, you agree to be bound by these Terms. If you do not agree, please do not use the site.",
     sections: [
       {
         heading: "1. About These Terms",
@@ -85,7 +85,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
       {
         heading: "9. Indemnification",
         body: [
-          "You agree to defend, indemnify, and hold harmless North Carolina Phở and its owners, employees, and suppliers from any claims, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of your violation of these Terms or your misuse of the website.",
+          "You agree to defend, indemnify, and hold harmless NC PHO VIETNAMESE NOODLE HOUSE and its owners, employees, and suppliers from any claims, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of your violation of these Terms or your misuse of the website.",
         ],
       },
       {
@@ -112,7 +112,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
   },
   vi: {
     intro:
-      "Chào mừng bạn đến với North Carolina Phở. Điều khoản dịch vụ này (\"Điều khoản\") quy định việc bạn sử dụng website và các thông tin được trình bày trên đó. Khi truy cập hoặc sử dụng website, bạn đồng ý bị ràng buộc bởi các Điều khoản này. Nếu không đồng ý, vui lòng không sử dụng website.",
+      "Chào mừng bạn đến với NC PHO VIETNAMESE NOODLE HOUSE. Điều khoản dịch vụ này (\"Điều khoản\") quy định việc bạn sử dụng website và các thông tin được trình bày trên đó. Khi truy cập hoặc sử dụng website, bạn đồng ý bị ràng buộc bởi các Điều khoản này. Nếu không đồng ý, vui lòng không sử dụng website.",
     sections: [
       {
         heading: "1. Về các Điều khoản này",
@@ -174,7 +174,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
       {
         heading: "9. Bồi hoàn",
         body: [
-          "Bạn đồng ý bảo vệ, bồi hoàn và giữ cho North Carolina Phở cùng chủ sở hữu, nhân viên, nhà cung cấp không bị tổn hại trước mọi khiếu nại, thiệt hại, trách nhiệm, chi phí và phí tổn (bao gồm phí luật sư hợp lý) phát sinh từ việc bạn vi phạm Điều khoản hoặc sử dụng sai mục đích website.",
+          "Bạn đồng ý bảo vệ, bồi hoàn và giữ cho NC PHO VIETNAMESE NOODLE HOUSE cùng chủ sở hữu, nhân viên, nhà cung cấp không bị tổn hại trước mọi khiếu nại, thiệt hại, trách nhiệm, chi phí và phí tổn (bao gồm phí luật sư hợp lý) phát sinh từ việc bạn vi phạm Điều khoản hoặc sử dụng sai mục đích website.",
         ],
       },
       {
@@ -208,8 +208,8 @@ export default function TermsOfService({ lang }: TermsOfServiceProps) {
   const backLabel = lang === "en" ? "Back to Home" : "Quay lại trang chủ";
   const description =
     lang === "en"
-      ? "The terms that govern your use of the North Carolina Phở website."
-      : "Các điều khoản điều chỉnh việc bạn sử dụng website North Carolina Phở.";
+      ? "The terms that govern your use of the NC PHO VIETNAMESE NOODLE HOUSE website."
+      : "Các điều khoản điều chỉnh việc bạn sử dụng website NC PHO VIETNAMESE NOODLE HOUSE.";
 
   return (
     <div className="bg-bg-cream min-h-screen">

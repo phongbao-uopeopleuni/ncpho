@@ -22,7 +22,7 @@ export const GOOGLE_MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIC
 export const ORDER_ONLINE_URL: string = "";
 
 export const BRAND_INFO = {
-  name: "North Carolina Phở",
+  name: "NC PHO VIETNAMESE NOODLE HOUSE",
   tagline: {
     en: "Vietnamese Authentic House",
     vi: "Ngôi Nhà Phở Việt Đích Thực"
@@ -30,9 +30,9 @@ export const BRAND_INFO = {
   location: "Washington, NC",
   address: RESTAURANT_ADDRESS,
   /** Display string for UI */
-  phone: "(+1) 252-756-7272",
+  phone: "(252) 833-0239",
   /** E.164 without `tel:` prefix — use for `href="tel:..."` */
-  phoneTel: "+12527567272",
+  phoneTel: "+12528330239",
   email: "info@ncpho.com",
   social: {
     facebook: "https://facebook.com/ncpho",
@@ -54,8 +54,8 @@ export const BRAND_INFO = {
       vi: "Hương vị truyền thống đích thực"
     },
     content: {
-      en: "At North Carolina Phở, we don't just serve food; we share a piece of culture. Using the freshest ingredients and traditional cooking techniques passed down through generations, we bring Washington, NC the most authentic Vietnamese culinary experiences.",
-      vi: "Tại North Carolina Phở, chúng tôi không chỉ phục vụ thức ăn; chúng tôi chia sẻ một phần văn hóa. Sử dụng những nguyên liệu tươi ngon nhất và kỹ thuật nấu nướng truyền thống được truyền qua nhiều thế hệ, chúng tôi mang đến Washington, NC những trải nghiệm ẩm thực Việt Nam đích thực nhất."
+      en: "At NC PHO VIETNAMESE NOODLE HOUSE, we don't just serve food; we share a piece of culture. Using the freshest ingredients and traditional cooking techniques passed down through generations, we bring Washington, NC the most authentic Vietnamese culinary experiences.",
+      vi: "Tại NC PHO VIETNAMESE NOODLE HOUSE, chúng tôi không chỉ phục vụ thức ăn; chúng tôi chia sẻ một phần văn hóa. Sử dụng những nguyên liệu tươi ngon nhất và kỹ thuật nấu nướng truyền thống được truyền qua nhiều thế hệ, chúng tôi mang đến Washington, NC những trải nghiệm ẩm thực Việt Nam đích thực nhất."
     }
   },
   nav: {

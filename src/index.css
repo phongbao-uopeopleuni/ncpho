@@ -83,6 +83,13 @@
   --color-accent-pink: #F48FB1;
   --color-bg-cream: #FAF9F6;
   --color-text-dark: #2D2D2D;
+  --color-hero-green: #245F43;
+  --color-accent-clay: #B94B2C;
+  --color-hero-surface: #FFF8ED;
+  --color-hero-ink: #173F2D;
+  --color-hero-muted: #526053;
+  --color-hero-gold: #E9BD69;
+  --color-hero-clay-hover: #9E3E23;
 }
 
 @layer base {
@@ -102,6 +109,34 @@
 
 .section-padding {
   @apply py-20 px-6 md:px-12 lg:px-24;
+}
+
+.hero-warmth {
+  background:
+    radial-gradient(ellipse at 85% 25%, #F4D29A66 0%, transparent 55%),
+    linear-gradient(120deg, var(--color-hero-surface) 0%, #FFF3DD 100%);
+}
+
+.hero-brand {
+  font-size: clamp(3.5rem, 15vw, 4.5rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.hero-photo-frame {
+  border-radius: 44% 44% 7% 7%;
+}
+
+@media (min-width: 1024px) {
+  .hero-brand {
+    font-size: clamp(5rem, 7.5vw, 7.5rem);
+  }
+}
+
+.special-meals {
+  background:
+    radial-gradient(ellipse at 0% 0%, #D4AF3714 0%, transparent 52%),
+    linear-gradient(135deg, #183C2D 0%, #132B22 65%, #282019 100%);
 }
 
 .text-reveal {

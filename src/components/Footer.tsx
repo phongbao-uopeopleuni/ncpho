@@ -4,7 +4,8 @@
  */
 
 import { Link } from "react-router-dom";
-import { BRAND_INFO, Language } from "../constants";
+import { MapPin, Phone, Clock } from "lucide-react";
+import { BRAND_INFO, GOOGLE_MAPS_URL, Language } from "../constants";
 
 interface FooterProps {
   lang: Language;
@@ -12,18 +13,19 @@ interface FooterProps {
 
 export default function Footer({ lang }: FooterProps) {
   const navLinks = BRAND_INFO.nav[lang];
+  const hours = BRAND_INFO.hours[lang];
 
   return (
     <footer className="bg-bg-cream border-t border-primary/10 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-12 mb-12">
+          <div className="col-span-1 xl:col-span-2">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-full border border-primary/20 flex items-center justify-center bg-white">
                 <span className="text-primary font-serif font-black text-xl italic">NC</span>
               </div>
-              <p className="text-2xl font-serif font-bold text-primary">
-                North Carolina Phở
+              <p className="text-xl font-serif font-bold text-primary sm:text-2xl">
+                {BRAND_INFO.name}
               </p>
             </div>
             <p className="text-text-dark/70 max-w-sm font-sans mb-6">
@@ -31,6 +33,41 @@ export default function Footer({ lang }: FooterProps) {
                 ? "Proudly serving traditional Phở flavors to the Washington, NC community. Your satisfaction is our happiness."
                 : "Tự hào mang đến hương vị Phở truyền thống cho cộng đồng Washington, NC. Sự hài lòng của bạn là niềm hạnh phúc của chúng tôi."}
             </p>
+          </div>
+
+          <div className="col-span-1 xl:col-span-2">
+            <h2 className="font-bold text-primary uppercase tracking-widest text-xs mb-6">
+              {lang === "en" ? "Visit Us" : "Ghé thăm chúng tôi"}
+            </h2>
+            <div className="space-y-5 text-sm font-sans text-text-dark/70">
+              <div className="flex items-start gap-3">
+                <MapPin size={20} className="mt-0.5 shrink-0 text-accent-gold-text" aria-hidden />
+                <div>
+                  <h3 className="font-bold text-primary mb-1">{lang === "en" ? "Location" : "Vị trí"}</h3>
+                  <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-accent-gold-text transition-colors">
+                    {BRAND_INFO.address}
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Phone size={20} className="mt-0.5 shrink-0 text-accent-gold-text" aria-hidden />
+                <div>
+                  <h3 className="font-bold text-primary mb-1">{lang === "en" ? "Phone" : "Điện thoại"}</h3>
+                  <a href={`tel:${BRAND_INFO.phoneTel}`} className="hover:text-accent-gold-text transition-colors">
+                    {BRAND_INFO.phone}
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Clock size={20} className="mt-0.5 shrink-0 text-accent-gold-text" aria-hidden />
+                <div>
+                  <h3 className="font-bold text-primary mb-1">{lang === "en" ? "Opening Hours" : "Giờ mở cửa"}</h3>
+                  {hours.map((h) => (
+                    <p key={h.day}>{h.day}: {h.time}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
           
           <div>

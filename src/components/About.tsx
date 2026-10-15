@@ -80,6 +80,10 @@ export default function About({ lang }: AboutProps) {
             <p className="text-text-dark/80 text-lg font-sans leading-relaxed">
               {BRAND_INFO.story.content[lang]}
             </p>
+
+            <p className="serif-italic text-accent-gold-text text-xl tracking-wide md:text-2xl">
+              {BRAND_INFO.tagline[lang]}
+            </p>
             
             <div className="grid grid-cols-2 gap-8 py-6 border-y border-primary/10">
               <div>

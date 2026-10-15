@@ -6,6 +6,7 @@
 import { motion } from "motion/react";
 import { MENU_CATEGORIES, Language } from "../constants";
 import { useState, useEffect, useRef } from "react";
+import SpecialMeals from "./SpecialMeals";
 
 interface MenuSectionProps {
   lang: Language;
@@ -25,22 +26,28 @@ export default function MenuSection({ lang }: MenuSectionProps) {
 
   // Scroll active category into view
   useEffect(() => {
-    const activeBtn = scrollRef.current?.querySelector(`[data-active="true"]`);
-    if (activeBtn) {
-      activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    const container = scrollRef.current;
+    const activeBtn = container?.querySelector<HTMLElement>(`[data-active="true"]`);
+    if (container && activeBtn) {
+      container.scrollBy({
+        left: activeBtn.getBoundingClientRect().left - container.getBoundingClientRect().left - (container.clientWidth - activeBtn.clientWidth) / 2,
+        behavior: 'smooth',
+      });
     }
   }, [activeCategory]);
 
   const activeItems = currentCategories.find((c) => c.id === activeCategory)?.items || [];
 
   return (
-    <section id="menu" className="section-padding bg-bg-cream scroll-mt-24 md:scroll-mt-32">
+    <>
+      <SpecialMeals lang={lang} />
+      <section id="menu" aria-labelledby="menu-heading" className="section-padding bg-bg-cream scroll-mt-24 md:scroll-mt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-accent-gold-text font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
-            {lang === "en" ? "Our Specials" : "Thực đơn đặc sắc"}
+            {lang === "en" ? "Our Menu" : "Thực đơn của chúng tôi"}
           </span>
-          <h2 className="text-4xl md:text-5xl text-primary font-bold mb-4">
+          <h2 id="menu-heading" className="text-4xl md:text-5xl text-primary font-bold mb-4">
             {lang === "en" ? "Vietnamese Culinary Essence" : "Tinh hoa Ẩm thực Việt"}
           </h2>
           <div className="w-24 h-1 bg-accent-gold mx-auto" />
@@ -162,5 +169,6 @@ export default function MenuSection({ lang }: MenuSectionProps) {
         </div>
       </div>
     </section>
+    </>
   );
 }

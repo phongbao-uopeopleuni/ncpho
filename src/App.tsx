@@ -23,11 +23,12 @@ function Home({ lang }: { lang: Language }) {
   return (
     <>
       <SEO
-        title={lang === "en" ? "Home" : "Trang chủ"}
+        title={lang === "en" ? "Vietnamese Restaurant & Hot Soup in Washington, NC" : "Phở Việt và súp nóng tại Washington, NC"}
+        titleBrand="NC PHO"
         description={
           lang === "en"
-            ? `Authentic Vietnamese Phở in ${BRAND_INFO.location}. Slow-cooked broth, fresh ingredients.`
-            : BRAND_INFO.story.content.vi
+            ? "Find NC PHO in Washington, NC for Vietnamese phở, hot soup and fresh favorites when searching for food near me or a restaurant near me."
+            : "Thưởng thức phở Việt, súp nóng và các món ngon tại NC PHO, Washington, NC. Ghé nhà hàng tại 1507 Carolina Ave để trải nghiệm hương vị Việt."
         }
         lang={lang}
       />
@@ -41,7 +42,7 @@ function Home({ lang }: { lang: Language }) {
 
 export default function App() {
   const [lang, setLang] = useState<Language>("en");
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, key } = useLocation();
 
   useEffect(() => {
     document.documentElement.lang = lang === "vi" ? "vi" : "en";
@@ -49,22 +50,23 @@ export default function App() {
 
   // Scroll to hash section on home (/#menu, /#about, etc.) or to top otherwise.
   useEffect(() => {
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
     if (!hash) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior });
       return;
     }
     const id = hash.slice(1);
     const run = () => {
       const el = document.getElementById(id);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.scrollIntoView({ behavior, block: "start" });
       } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior });
       }
     };
-    const frame = requestAnimationFrame(() => requestAnimationFrame(run));
+    let frame = requestAnimationFrame(() => { frame = requestAnimationFrame(run); });
     return () => cancelAnimationFrame(frame);
-  }, [pathname, hash]);
+  }, [pathname, hash, key]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -88,22 +90,23 @@ export default function App() {
           target={ORDER_ONLINE_URL ? "_blank" : undefined}
           rel={ORDER_ONLINE_URL ? "noopener noreferrer" : undefined}
           aria-disabled={!ORDER_ONLINE_URL}
+          aria-label={lang === "en" ? "Order Online" : "Đặt món"}
           title={ORDER_ONLINE_URL ? undefined : lang === "en" ? "Online ordering coming soon" : "Liên kết đặt món sẽ sớm được cập nhật"}
-          className={`flex h-12 w-44 items-center rounded-full border-2 border-white/80 bg-accent-gold-text px-4 text-white shadow-[0_10px_30px_rgba(140,109,31,0.28)] transition-transform sm:h-13 sm:w-48 sm:px-5 ${ORDER_ONLINE_URL ? "hover:scale-105 hover:bg-primary active:scale-95" : "cursor-not-allowed"}`}
+          className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/80 bg-accent-clay text-white shadow-[0_10px_30px_rgba(185,75,44,0.25)] transition-transform lg:h-13 lg:w-48 lg:justify-start lg:px-5 ${ORDER_ONLINE_URL ? "hover:scale-105 hover:bg-primary active:scale-95" : "cursor-not-allowed"}`}
         >
           <ShoppingBag size={18} className="text-white/90" strokeWidth={2.25} aria-hidden />
-          <span className="flex-1 whitespace-nowrap text-center text-[11px] font-bold uppercase tracking-[0.13em] sm:text-xs">
+          <span className="sr-only lg:not-sr-only lg:flex-1 whitespace-nowrap text-center text-xs font-bold uppercase tracking-[0.13em]">
             {lang === "en" ? "Order Online" : "Đặt món"}
           </span>
         </a>
 
         <a
           href={`tel:${BRAND_INFO.phoneTel}`}
-          className="flex h-12 w-38 items-center rounded-full border-2 border-white/70 bg-primary px-4 text-white shadow-[0_10px_28px_rgba(27,67,50,0.25)] transition-transform hover:scale-105 hover:bg-[#123326] active:scale-95 sm:h-13 sm:w-42 sm:px-5"
+          className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-primary text-white shadow-[0_10px_28px_rgba(27,67,50,0.25)] transition-transform hover:scale-105 hover:bg-[#123326] active:scale-95 lg:h-13 lg:w-42 lg:justify-start lg:px-5"
           aria-label={lang === "en" ? "Call Us" : "Gọi ngay"}
         >
           <Phone size={18} className="text-accent-gold" fill="currentColor" strokeWidth={2.25} aria-hidden />
-          <span className="flex-1 whitespace-nowrap text-center text-[11px] font-bold uppercase tracking-[0.13em] sm:text-xs">
+          <span className="sr-only lg:not-sr-only lg:flex-1 whitespace-nowrap text-center text-xs font-bold uppercase tracking-[0.13em]">
             {lang === "en" ? "Call Us" : "Gọi ngay"}
           </span>
         </a>
@@ -112,11 +115,11 @@ export default function App() {
           href={GOOGLE_MAPS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-12 w-44 items-center rounded-full border-2 border-primary/20 bg-bg-cream px-4 text-primary shadow-[0_10px_28px_rgba(27,67,50,0.18)] transition-transform hover:scale-105 hover:border-primary hover:bg-white active:scale-95 sm:h-13 sm:w-48 sm:px-5"
+          className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary/20 bg-bg-cream text-primary shadow-[0_10px_28px_rgba(27,67,50,0.18)] transition-transform hover:scale-105 hover:border-primary hover:bg-white active:scale-95 lg:h-13 lg:w-48 lg:justify-start lg:px-5"
           aria-label={lang === "en" ? "Directions" : "Chỉ đường"}
         >
           <MapPin size={18} className="text-accent-gold-text" strokeWidth={2.25} aria-hidden />
-          <span className="flex-1 whitespace-nowrap text-center text-[11px] font-bold uppercase tracking-[0.13em] sm:text-xs">
+          <span className="sr-only lg:not-sr-only lg:flex-1 whitespace-nowrap text-center text-xs font-bold uppercase tracking-[0.13em]">
             {lang === "en" ? "Directions" : "Chỉ đường"}
           </span>
         </a>

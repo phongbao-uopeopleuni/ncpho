@@ -23,7 +23,7 @@ interface Section {
 const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
   en: {
     intro:
-      "North Carolina Phở (\"we\", \"us\", \"our\") values your privacy. This Privacy Policy explains what limited information we collect when you visit our website, how it is used, and the choices you have. By using this site, you agree to the practices described below.",
+      "NC PHO VIETNAMESE NOODLE HOUSE (\"we\", \"us\", \"our\") values your privacy. This Privacy Policy explains what limited information we collect when you visit our website, how it is used, and the choices you have. By using this site, you agree to the practices described below.",
     sections: [
       {
         heading: "1. Information We Collect",
@@ -99,7 +99,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
   },
   vi: {
     intro:
-      "North Carolina Phở (\"chúng tôi\") tôn trọng quyền riêng tư của bạn. Chính sách bảo mật này giải thích những thông tin hạn chế mà chúng tôi thu thập khi bạn truy cập website, cách chúng tôi sử dụng và các lựa chọn bạn có. Khi sử dụng website, bạn đồng ý với các thực hành được mô tả dưới đây.",
+      "NC PHO VIETNAMESE NOODLE HOUSE (\"chúng tôi\") tôn trọng quyền riêng tư của bạn. Chính sách bảo mật này giải thích những thông tin hạn chế mà chúng tôi thu thập khi bạn truy cập website, cách chúng tôi sử dụng và các lựa chọn bạn có. Khi sử dụng website, bạn đồng ý với các thực hành được mô tả dưới đây.",
     sections: [
       {
         heading: "1. Thông tin chúng tôi thu thập",
@@ -182,8 +182,8 @@ export default function PrivacyPolicy({ lang }: PrivacyPolicyProps) {
   const backLabel = lang === "en" ? "Back to Home" : "Quay lại trang chủ";
   const description =
     lang === "en"
-      ? "How North Carolina Phở handles the limited information collected when you visit our website."
-      : "Cách North Carolina Phở xử lý những thông tin hạn chế thu thập khi bạn truy cập website.";
+      ? "How NC PHO VIETNAMESE NOODLE HOUSE handles the limited information collected when you visit our website."
+      : "Cách NC PHO VIETNAMESE NOODLE HOUSE xử lý những thông tin hạn chế thu thập khi bạn truy cập website.";
 
   return (
     <div className="bg-bg-cream min-h-screen">

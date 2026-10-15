@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
-import { Phone } from "lucide-react";
+import { ArrowRight, MapPin, Phone } from "lucide-react";
 import { BRAND_INFO, Language } from "../constants";
 
 interface HeroProps {
@@ -13,106 +13,83 @@ interface HeroProps {
 }
 
 export default function Hero({ lang }: HeroProps) {
+  const reducedMotion = useReducedMotion();
+
   return (
-    <section id="home" className="relative flex min-h-screen flex-col overflow-hidden scroll-mt-24 pb-16 pt-24 md:scroll-mt-32 md:pb-24 md:pt-32">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 rounded-l-full blur-3xl opacity-50" />
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-accent-pink/5 rounded-full blur-3xl opacity-30" />
-      
-      {/* Bamboo Pattern (Visual mockup) */}
-      <div className="absolute top-40 left-10 opacity-10 pointer-events-none hidden lg:block">
-        <svg width="200" height="400" viewBox="0 0 200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M100 0V400" stroke="currentColor" strokeWidth="2" className="text-primary" />
-          <path d="M100 50C120 40 150 70 100 100" stroke="currentColor" strokeWidth="2" className="text-primary" />
-          <path d="M100 150C80 140 50 170 100 200" stroke="currentColor" strokeWidth="2" className="text-primary" />
-          <path d="M100 250C120 240 150 270 100 300" stroke="currentColor" strokeWidth="2" className="text-primary" />
-        </svg>
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 text-center sm:px-6 lg:px-8">
+    <section id="home" className="hero-warmth relative isolate overflow-hidden scroll-mt-24 pb-24 pt-24 sm:pt-32 lg:flex lg:min-h-svh lg:items-center lg:scroll-mt-32 lg:py-32">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-6 sm:gap-12 sm:px-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: reducedMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="min-w-0"
         >
-          <span className="serif-italic text-accent-gold-text text-lg md:text-xl mb-4 block tracking-wide">
-            {BRAND_INFO.tagline[lang]}
-          </span>
-          <h1 className="text-5xl md:text-8xl font-serif font-bold text-primary leading-tight mb-6">
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="block"
-            >
-              NORTH CAROLINA
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-accent-gold-text italic"
-            >
-              Phở
-            </motion.span>
+          <p className="mb-6 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-hero-ink sm:text-sm">
+            <MapPin size={16} className="text-accent-clay" aria-hidden />
+            {BRAND_INFO.location}
+          </p>
+          <h1 className="font-serif text-hero-green">
+            <span className="hero-brand block font-bold">
+              NC PHO
+            </span>
+            <span className="mt-5 block font-sans text-xs font-semibold tracking-[0.17em] text-accent-clay sm:text-sm lg:text-base">
+              VIETNAMESE NOODLE HOUSE
+            </span>
           </h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="max-w-2xl mx-auto text-text-dark/80 text-lg mb-10 font-sans"
-          >
-            {lang === "en" 
-              ? "Experience refined traditional flavors in the heart of Washington, NC. Each bowl is a masterpiece, crafted with meticulous care and passion."
-              : "Trải nghiệm hương vị truyền thống tinh tế tại trung tâm Washington, NC. Mỗi bát phở là một tác phẩm nghệ thuật, kết tinh từ sự tỉ mỉ và tâm huyết."}
-          </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full"
-          >
-            <Link to="/#menu" className="w-full sm:w-auto bg-primary text-white px-10 py-4 rounded-full text-lg font-medium hover:scale-105 transition-transform shadow-xl shadow-primary/20 flex justify-center">
-              {lang === "en" ? "Explore Menu" : "Khám phá thực đơn"}
+          <p className="mt-7 max-w-lg font-serif text-3xl italic leading-tight text-hero-ink sm:text-4xl">
+            {lang === "en" ? "Comfort, by the bowl." : "Ấm lòng từ một tô phở."}
+          </p>
+          <p className="mt-5 max-w-md text-base leading-relaxed text-hero-muted sm:text-lg">
+            {lang === "en"
+              ? "Slow-simmered broth, fresh herbs, and a warm Vietnamese welcome in the heart of Washington, NC."
+              : "Nước dùng hầm chậm, rau thơm tươi và một lời chào Việt Nam ấm áp ngay tại Washington, NC."}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+            <Link to="/#menu" className="inline-flex min-h-13 items-center justify-center gap-2.5 rounded-full bg-accent-clay px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-clay/20 transition-colors hover:bg-hero-clay-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-clay sm:gap-3 sm:px-7 sm:text-base">
+              {lang === "en" ? "Explore Menu" : "Xem thực đơn"}
+              <ArrowRight size={19} aria-hidden />
             </Link>
-            <a 
+            <a
               href={`tel:${BRAND_INFO.phoneTel}`}
-              className="w-full sm:w-auto border-2 border-primary text-primary px-10 py-4 rounded-full text-lg font-medium hover:bg-primary hover:text-white transition-all flex justify-center items-center gap-2"
+              className="inline-flex min-h-13 items-center justify-center gap-2.5 rounded-full border border-hero-green/40 px-5 py-3.5 text-sm font-semibold text-hero-green transition-colors hover:border-hero-green hover:bg-hero-green hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-hero-green sm:px-7 sm:text-base"
             >
-              <Phone size={20} />
-              {lang === "en" ? "Call Us" : "Gọi cho chúng tôi"}
+              <Phone size={18} aria-hidden />
+              {lang === "en" ? "Call Us" : "Gọi ngay"}
             </a>
-          </motion.div>
+          </div>
+          <p className="mt-8 hidden border-t border-hero-green/15 pt-5 text-sm font-medium text-hero-muted sm:block">
+            {lang === "en" ? "Phở · Bánh mì · Vietnamese favorites" : "Phở · Bánh mì · Hương vị Việt"}
+          </p>
         </motion.div>
-
-        {/* Lotus Icon Mockup */}
-        <motion.div 
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="mt-20 flex w-full justify-center text-accent-pink opacity-20"
+        <motion.figure
+          initial={reducedMotion ? false : { opacity: 0, x: 22 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: reducedMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-[21rem] sm:max-w-[30rem] lg:mr-0 lg:max-w-[34rem]"
         >
-           <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2C12 2 10 14 12 14C14 14 12 2 12 2Z" />
-            <path d="M12 14C14.5 14 20 18 20 18C20 18 14 18 12 14Z" />
-            <path d="M12 14C9.5 14 4 18 4 18C4 18 10 18 12 14Z" />
-            <path d="M12 14C12 14 18 10 18 10C18 10 14 12 12 14Z" />
-            <path d="M12 14C12 14 6 10 6 10C6 10 10 12 12 14Z" />
-          </svg>
-        </motion.div>
+          <div className="hero-photo-frame pointer-events-none absolute -inset-2 rotate-3 bg-hero-gold/65 sm:-inset-3" aria-hidden />
+          <div className="hero-photo-frame relative aspect-square overflow-hidden bg-hero-gold shadow-2xl shadow-hero-ink/15">
+            <img
+              src={`${import.meta.env.BASE_URL}images/gallery/food-3.webp`}
+              alt={lang === "en" ? "A steaming bowl of beef phở with fresh herbs, lime, and Vietnamese accompaniments" : "Tô phở bò nóng hổi cùng rau thơm, chanh và các món ăn kèm Việt Nam"}
+              width="1200"
+              height="1697"
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              className="h-full w-full object-cover object-bottom"
+            />
+          </div>
+          <figcaption className="absolute -bottom-6 -left-2 rounded-2xl bg-hero-surface px-5 py-4 shadow-xl shadow-hero-ink/10 sm:-left-5 sm:px-6">
+            <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-accent-clay">
+              {lang === "en" ? "A house favorite" : "Món ngon của nhà"}
+            </span>
+            <span className="mt-1.5 block font-serif text-xl font-bold text-hero-ink sm:text-2xl">
+              {lang === "en" ? "Signature beef phở" : "Phở bò đặc biệt"}
+            </span>
+          </figcaption>
+        </motion.figure>
       </div>
-      
-      {/* Scroll Indicator */}
-      <motion.div 
-        animate={{ y: [0, 5, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-        className="pointer-events-none absolute inset-x-0 bottom-10 flex flex-col items-center justify-center gap-2 text-primary opacity-50"
-      >
-        <span className="text-[10px] uppercase tracking-widest font-bold">
-          {lang === "en" ? "Scroll Down" : "Cuộn xuống"}
-        </span>
-        <div className="w-px h-12 bg-primary/30" />
-      </motion.div>
     </section>
   );
 }

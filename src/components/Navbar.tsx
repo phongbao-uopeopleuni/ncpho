@@ -117,10 +117,10 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
         <div className="flex h-14 items-center justify-between md:hidden sm:h-16">
           <Link
             to="/"
-            className="font-serif text-base font-semibold tracking-tight text-primary transition-colors hover:text-primary/80 sm:text-lg"
+            className="max-w-[13rem] text-[9px] font-bold uppercase leading-tight tracking-[0.12em] text-primary transition-colors hover:text-primary/80 sm:max-w-none sm:text-[10px]"
             onClick={() => setIsOpen(false)}
           >
-            NC Phở
+            {BRAND_INFO.name}
           </Link>
           <div className="flex items-center gap-2">
             <button

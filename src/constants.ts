@@ -33,7 +33,8 @@ export const BRAND_INFO = {
   phone: "(252) 833-0239",
   /** E.164 without `tel:` prefix — use for `href="tel:..."` */
   phoneTel: "+12528330239",
-  email: "info@ncpho.com",
+  /** Leave empty until the restaurant has its own address; the "Email:" line is hidden while empty. */
+  email: "",
   social: {
     facebook: "https://facebook.com/ncpho",
     instagram: "https://instagram.com/ncpho",

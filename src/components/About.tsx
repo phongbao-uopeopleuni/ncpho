@@ -15,18 +15,21 @@ export default function About({ lang }: AboutProps) {
     <section id="about" className="section-padding bg-white relative overflow-hidden scroll-mt-24 md:scroll-mt-32">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Capped by width and by viewport height (4:5 oval → height ≤ 62svh) and top-aligned
+              on desktop (centring against the taller text pushed it below the fold), so the whole
+              portrait stays on screen when scrolled to; the oval decoration scales along. */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative mx-auto w-[min(100%,26rem,calc(62svh*0.8))] lg:self-start"
           >
             <div className="aspect-[4/5] bg-bg-cream rounded-full overflow-hidden shadow-2xl relative z-10 border border-primary/5 p-3 sm:p-4">
               <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full">
                 <img
                   src={`${import.meta.env.BASE_URL}home.webp`}
                   srcSet={`${import.meta.env.BASE_URL}home-360.webp 360w, ${import.meta.env.BASE_URL}home.webp 540w`}
-                  sizes="(min-width: 1024px) 45vw, 92vw"
+                  sizes="(min-width: 640px) 26rem, 92vw"
                   alt=""
                   className="absolute left-1/2 top-1/2 h-[92%] w-[92%] max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 object-contain object-center"
                   decoding="async"

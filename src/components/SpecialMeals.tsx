@@ -48,7 +48,8 @@ export default function SpecialMeals({ lang }: { lang: Language }) {
     const section = sectionRef.current;
     if (!section) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
+      // Entries can arrive batched (oldest first); only the last one is the current state.
+      (entries) => setVisible(entries[entries.length - 1].isIntersecting),
       { threshold: 0.1 },
     );
     observer.observe(section);

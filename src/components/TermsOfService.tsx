@@ -105,7 +105,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
         body: [
           `Questions about these Terms? Please contact us:`,
           `${BRAND_INFO.name} — ${BRAND_INFO.address}`,
-          `Phone: ${BRAND_INFO.phone} · Email: ${BRAND_INFO.email}`,
+          `Phone: ${BRAND_INFO.phone}${BRAND_INFO.email ? ` · Email: ${BRAND_INFO.email}` : ""}`,
         ],
       },
     ],
@@ -194,7 +194,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
         body: [
           `Mọi câu hỏi về Điều khoản, vui lòng liên hệ:`,
           `${BRAND_INFO.name} — ${BRAND_INFO.address}`,
-          `Điện thoại: ${BRAND_INFO.phone} · Email: ${BRAND_INFO.email}`,
+          `Điện thoại: ${BRAND_INFO.phone}${BRAND_INFO.email ? ` · Email: ${BRAND_INFO.email}` : ""}`,
         ],
       },
     ],

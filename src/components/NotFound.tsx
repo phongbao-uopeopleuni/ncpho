@@ -32,7 +32,7 @@ export default function NotFound({ lang }: NotFoundProps) {
               : "Có vẻ như bát phở bạn đang tìm đã được phục vụ đi mất rồi."}
           </p>
           <motion.a
-            href="/"
+            href={import.meta.env.BASE_URL}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/20"

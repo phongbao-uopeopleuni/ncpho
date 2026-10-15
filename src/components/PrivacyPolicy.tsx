@@ -92,7 +92,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
         body: [
           `If you have questions about this Privacy Policy or how your information is handled, please contact us:`,
           `${BRAND_INFO.name} — ${BRAND_INFO.address}`,
-          `Phone: ${BRAND_INFO.phone} · Email: ${BRAND_INFO.email}`,
+          `Phone: ${BRAND_INFO.phone}${BRAND_INFO.email ? ` · Email: ${BRAND_INFO.email}` : ""}`,
         ],
       },
     ],
@@ -168,7 +168,7 @@ const CONTENT: Record<Language, { intro: string; sections: Section[] }> = {
         body: [
           `Nếu có câu hỏi về Chính sách bảo mật hoặc cách xử lý thông tin của bạn, vui lòng liên hệ:`,
           `${BRAND_INFO.name} — ${BRAND_INFO.address}`,
-          `Điện thoại: ${BRAND_INFO.phone} · Email: ${BRAND_INFO.email}`,
+          `Điện thoại: ${BRAND_INFO.phone}${BRAND_INFO.email ? ` · Email: ${BRAND_INFO.email}` : ""}`,
         ],
       },
     ],

@@ -2,13 +2,15 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
+import {cspMetaPlugin} from './security/csp';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   const basePath = env.VITE_BASE_PATH || '/';
   return {
     base: basePath,
-    plugins: [react(), tailwindcss()],
+    // cspMetaPlugin is build-only: production gets the CSP meta tag, dev/HMR does not.
+    plugins: [react(), tailwindcss(), cspMetaPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -30,7 +32,7 @@ export default defineConfig(({mode}) => {
       hmr: process.env.DISABLE_HMR !== 'true',
       proxy: {
         "/api": {
-          target: `http://localhost:${env.PORT || 8787}`,
+          target: `http://127.0.0.1:${env.PORT || 8787}`,
           changeOrigin: true,
         },
       },

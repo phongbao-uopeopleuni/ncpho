@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "audit:security": "npm audit --omit=dev"
+    "test:security": "node --import tsx --test tests/security/csp-policy.test.ts tests/security/csp-build.test.ts tests/security/api.test.ts tests/security/ai-client.test.ts",
+    "test:security:browser": "node tests/security/browser-csp.mjs dist",
+    "audit:security": "npm audit"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

@@ -61,3 +61,30 @@ jobs:
           echo "$headers" | grep -iq "referrer-policy: strict-origin-when-cross-origin"
           echo "$headers" | grep -iq "permissions-policy: camera=(), microphone=(), geolocation=()"
           echo "$headers" | grep -iq "content-security-policy: default-src 'none'; frame-ancestors 'none'; base-uri 'none';"
+
+  security-regression-tests:
+    name: Security regression tests (CSP, API, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          # The browser harness needs the global WebSocket (Node 22+).
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:security
+      # Same base path as deploy-pages.yml, served the way GitHub Pages serves the project site.
+      - run: npm run build
+        env:
+          VITE_BASE_PATH: /ncpho/
+
+      - name: Browser CSP test (headless Chrome, GitHub Pages-like server)
+        run: npm run test:security:browser -- --base=/ncpho/
+        env:
+          CHROME_PATH: /usr/bin/google-chrome

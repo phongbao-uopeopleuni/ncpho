@@ -9,3 +9,11 @@ coverage/
 
 .vercel
 .env*.local
+
+# Local scratch output (browser profiles with cookies, screenshots, audit builds)
+tmp/
+
+# Not part of the website: full-size print originals (the site ships public/images/*.webp)
+# and local AI-agent skill files.
+Images/gallery/
+.agents/

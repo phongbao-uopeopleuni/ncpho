@@ -9,7 +9,11 @@ export type GalleryItem = {
   title: Record<Language, string>;
 };
 
-export const GALLERY_ITEMS: GalleryItem[] = [
+// Image paths are written root-relative; prefix Vite's base so they also resolve when the
+// site is served from a sub-path (GitHub Pages project site: /ncpho/).
+const withBase = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+
+export const GALLERY_ITEMS: GalleryItem[] = ([
   { id: "food-3", image: "/images/gallery/food-3.webp", category: "Food", title: { en: "Signature Beef Phở", vi: "Phở Bò Đặc Biệt" } },
   { id: "food-28", image: "/images/gallery/food-28.webp", category: "Food", title: { en: "Oxtail Beef Phở", vi: "Phở Đuôi Bò" } },
   { id: "food-27", image: "/images/gallery/food-27.webp", category: "Food", title: { en: "Rib Beef Phở", vi: "Phở Sườn Bò" } },
@@ -39,5 +43,5 @@ export const GALLERY_ITEMS: GalleryItem[] = [
   { id: "food-25", image: "/images/gallery/food-25.webp", category: "Food", title: { en: "Appetizer Favorites", vi: "Khai Vị Đặc Sắc" } },
   { id: "drink-1", image: "/images/gallery/drink-1.webp", category: "Drinks", title: { en: "Vietnamese Drinks", vi: "Thức Uống Việt Nam" } },
   { id: "drink-2", image: "/images/gallery/drink-2.webp", category: "Drinks", title: { en: "Fresh Smoothies", vi: "Sinh Tố Tươi" } },
-];
+] satisfies GalleryItem[]).map((item) => ({ ...item, image: withBase(item.image) }));
 

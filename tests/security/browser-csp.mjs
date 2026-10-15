@@ -2,13 +2,13 @@
 /**
  * Browser regression test for the production CSP / Trusted Types setup.
  *
- *   node tests/security/browser-csp.mjs <distDir> [--expect=protected|unprotected] [--base=/ncpho/] [--out=report.json]
+ *   node tests/security/browser-csp.mjs <distDir> [--expect=protected|unprotected] [--base=/ncpho/] [--out=report.json] [--screenshots=tmp] [--profile-root=tmp]
  *
  * --base serves the build under that path prefix only (everything else is 404), the
  * way GitHub Pages serves a project site, so a wrong Vite `base` shows up as failures.
  *
- * Serves a built site exactly like GitHub Pages does (no security headers, so the
- * only policy is the <meta> tag in index.html), drives headless Chrome/Edge over
+ * Serves a built site using Vercel's configured rewrites and clean URLs, without
+ * response security headers so the meta CSP is tested independently. Drives Chrome/Edge over
  * raw CDP (no extra dependencies), and checks two things:
  *   1. legitimate features keep working with zero CSP violations / page errors;
  *   2. injected markup and DOM-sink payloads do not execute or reach an "attacker".
@@ -37,6 +37,7 @@ if (typeof WebSocket === "undefined") {
 const dist = resolve(distArg);
 const expectMode = args.find((a) => a.startsWith("--expect="))?.split("=")[1] ?? "protected";
 const outPath = args.find((a) => a.startsWith("--out="))?.slice("--out=".length);
+const screenshotDir = args.find((a) => a.startsWith("--screenshots="))?.slice("--screenshots=".length);
 const protectedMode = expectMode === "protected";
 const base = `/${(args.find((a) => a.startsWith("--base="))?.slice("--base=".length) ?? "").replace(/^\/+|\/+$/g, "")}/`.replace("//", "/");
 if (!existsSync(join(dist, "index.html"))) {
@@ -86,12 +87,17 @@ const payloadMarkup = `
   <base href="${sink}/">
 </div>`;
 
-// ---- site server: GitHub Pages-like (no CSP / framing headers at all) ----
+// ---- site server: Vercel clean URLs/rewrites, without headers to independently test meta CSP ----
+const routingConfig = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
 const indexHtml = readFileSync(join(dist, "index.html"), "utf8");
+const menuHtml = readFileSync(join(dist, "menu.html"), "utf8");
 const inject = (extra) => indexHtml.replace(/<body([^>]*)>/i, (m) => `${m}\n${extra}`);
 const pages = {
+  "/__menu_nojs__": menuHtml.replace(/<script type="module"[^>]*>[\s\S]*?<\/script>/g, ""),
   "/__attack__": inject(payloadMarkup),
   "/__attack_nav__": inject(`<meta http-equiv="refresh" content="0;url=${sink}/exfil-nav?d=probe">`),
+  // The app bundle 404s (what happened in production with a wrong base path).
+  "/__nojs__": indexHtml.replace(/(<script type="module"[^>]*\bsrc=")[^"]+(")/, `$1${base}assets/__missing-app.js$2`),
 };
 const siteServer = await listen(createServer((req, res) => {
   const { pathname } = new URL(req.url, "http://localhost");
@@ -106,8 +112,11 @@ const siteServer = await listen(createServer((req, res) => {
     body = pages[path];
     type = MIME[".html"];
   } else {
-    const rel = path === "/" ? "index.html" : decodeURIComponent(path).replace(/^\/+/, "");
-    const file = resolve(dist, rel);
+    const rule = routingConfig.rewrites.find(rule => new RegExp(`^${rule.source}$`).test(path));
+    const target = rule?.destination || path;
+    const rel = target === "/" ? "index.html" : decodeURIComponent(target).replace(/^\/+/, "");
+    let file = resolve(dist, rel);
+    if (routingConfig.cleanUrls && !extname(file) && existsSync(`${file}.html`)) file += '.html';
     if (!file.startsWith(dist + sep) || !existsSync(file) || statSync(file).isDirectory()) {
       res.writeHead(404, { "Content-Type": "text/plain" });
       return res.end("not found");
@@ -133,7 +142,8 @@ if (!chromePath) {
   console.error("Chrome/Edge not found; set CHROME_PATH");
   process.exit(2);
 }
-const profile = mkdtempSync(join(tmpdir(), "ncpho-csp-"));
+const profileRoot = args.find(a => a.startsWith("--profile-root="))?.slice("--profile-root=".length) || tmpdir();
+const profile = mkdtempSync(join(resolve(profileRoot), "ncpho-csp-"));
 const chrome = spawn(chromePath, [
   "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
   "--disable-background-networking", "--disable-component-update", "--disable-sync",
@@ -266,10 +276,12 @@ try {
     await sleep(50);
     await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   }
-  async function key(name, code) {
-    await send("Input.dispatchKeyEvent", { type: "keyDown", key: name, code: name, windowsVirtualKeyCode: code });
-    await send("Input.dispatchKeyEvent", { type: "keyUp", key: name, code: name, windowsVirtualKeyCode: code });
+  async function key(name, code, modifiers = 0) {
+    await send("Input.dispatchKeyEvent", { type: "keyDown", key: name, code: name, windowsVirtualKeyCode: code, modifiers });
+    await send("Input.dispatchKeyEvent", { type: "keyUp", key: name, code: name, windowsVirtualKeyCode: code, modifiers });
   }
+  const navLink = (label) => `[...document.querySelectorAll('nav a')].find((a) => a.textContent.trim() === '${label}' && a.offsetParent !== null)`;
+  const focusInDialog = "!!document.querySelector('[role=\"dialog\"]')?.contains(document.activeElement)";
   async function viewport(width, height, mobile) {
     await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
     await send("Emulation.setTouchEmulationEnabled", { enabled: mobile, maxTouchPoints: mobile ? 5 : 1 });
@@ -327,32 +339,87 @@ try {
   const heroOk = await waitFor("(() => { const i = document.querySelector('img[fetchpriority=\"high\"]'); return i && i.complete && i.naturalWidth > 0; })()");
   record("images", "hero image loaded", heroOk);
 
+  record("app", "static fallback is replaced once the app renders", await evaluate("document.querySelectorAll('[data-app-fallback]').length === 0"));
+  const quick = await evaluate(`(() => {
+    const nav = [...document.querySelectorAll('nav')].find((n) => n.getAttribute('aria-label') === 'Quick actions');
+    return { links: [...(nav?.querySelectorAll('a') ?? [])].map((a) => ({ label: a.getAttribute('aria-label'), href: a.getAttribute('href') })),
+      hreflessVisible: [...document.querySelectorAll('a:not([href])')].filter((a) => a.getClientRects().length).length }; })()`);
+  const callToOrder = quick.links.find((l) => /call to order/i.test(l.label ?? ""));
+  const orderOnline = quick.links.find((l) => /order online/i.test(l.label ?? ""));
+  record("links", "ordering quick action works (online link, or 'Call to Order' with the phone number); no dead links",
+    quick.hreflessVisible === 0 && (orderOnline?.href?.startsWith("https://")
+      || (callToOrder?.href === "tel:+12528330239" && callToOrder.label.includes("(252) 833-0239"))), quick);
+
   // Menu: hover must not navigate; click must.
   await step("menu", "desktop 'Menu' hover/click", async () => {
     await evaluate("window.scrollTo({ top: 0, behavior: 'instant' })");
     const desktopMenu = "[...document.querySelectorAll('nav a')].find((a) => a.textContent.trim() === 'Menu' && a.offsetParent !== null)";
-    const before = await evaluate("({ hash: location.hash, y: Math.round(scrollY) })");
+    const before = await evaluate("({ hash: location.hash, path: location.pathname, y: Math.round(scrollY) })");
     await hover(await point(desktopMenu, false));
     await sleep(700);
-    const afterHover = await evaluate("({ hash: location.hash, y: Math.round(scrollY) })");
-    record("menu", "hover over 'Menu' does not navigate", afterHover.hash === before.hash && Math.abs(afterHover.y - before.y) < 5, { before, afterHover });
+    const afterHover = await evaluate("({ hash: location.hash, path: location.pathname, y: Math.round(scrollY) })");
+    record("menu", "hover over 'Menu' does not navigate", afterHover.path === before.path && afterHover.hash === before.hash && Math.abs(afterHover.y - before.y) < 5, { before, afterHover });
     await click(await point(desktopMenu, false));
-    const hashOk = await waitFor("location.hash === '#/#menu'", 4000);
+    const hashOk = await waitFor("location.pathname.endsWith('/menu') && !!document.querySelector('.menu-dish-name')", 4000);
     await sleep(1500);
     const menuTop = await evaluate("Math.round(document.getElementById('menu').getBoundingClientRect().top)");
-    record("menu", "click on 'Menu' navigates to the menu section", hashOk && Math.abs(menuTop) < 220, `hash ok=${hashOk} top=${menuTop}`);
+    record("menu", "click on 'Menu' opens the independent menu page", hashOk && Math.abs(menuTop) < 220, `route ok=${hashOk} top=${menuTop}`);
+
+    // Category pills switch the dishes shown.
+    const pills = "[...document.querySelectorAll('#menu a[data-category]')]";
+    const firstDish = "document.querySelector('#menu section:not([hidden]) .menu-dish-name')?.textContent.trim()";
+    const dishBefore = await evaluate(firstDish);
+    await click(await point(`${pills}[1]`));
+    const switched = await waitFor(`${pills}[1].getAttribute('aria-current') === 'true' && ${firstDish} !== ${JSON.stringify(dishBefore)}`, 3000);
+    const dishAfter = await evaluate(firstDish);
+    await click(await point(`${pills}[0]`));
+    record("menu", "sidebar categories switch the dishes shown", switched, { dishBefore, dishAfter });
+    await waitFor(`${pills}[0].getAttribute('aria-current') === 'true'`);
+    await evaluate("window.scrollTo({ top: 0, behavior: 'instant' })");
+    await evaluate("document.fonts.ready.then(() => true)");
+    if (screenshotDir) {
+      const shot = await send("Page.captureScreenshot", { format: "png" });
+      writeFileSync(join(screenshotDir, "menu-desktop.png"), Buffer.from(shot.data, "base64"));
+    }
+    const completeness = await evaluate("({ items: document.querySelectorAll('[data-menu-item]').length, categories: document.querySelectorAll('.menu-category-section').length, font: getComputedStyle(document.querySelector('.menu-dish-name')).fontFamily, overflow: document.documentElement.scrollWidth > innerWidth })");
+    record("menu", "all 151 entries remain available and the approved typography is loaded", completeness.items === 151 && completeness.categories === 11 && completeness.font.includes('Lora') && !completeness.overflow, completeness);
   });
 
   await step("i18n", "EN -> VN -> EN switch", async () => {
     const langButton = (label) => `[...document.querySelectorAll('nav button')].find((b) => b.textContent.trim() === '${label}' && b.offsetParent !== null)`;
     await click(await point(langButton("VN"), false));
-    const viOk = await waitFor("document.documentElement.lang === 'vi' && document.body.innerText.includes('Ấm lòng từ một tô phở.')");
+    const viOk = await waitFor("document.documentElement.lang === 'vi' && location.pathname.endsWith('/vi/menu') && document.body.innerText.includes('Chả Giò (3 cuốn)')");
     await click(await point(langButton("EN"), false));
-    const enOk = await waitFor("document.documentElement.lang === 'en' && document.body.innerText.includes('Comfort, by the bowl.')");
+    const enOk = await waitFor("document.documentElement.lang === 'en' && location.pathname.endsWith('/menu') && !location.pathname.endsWith('/vi/menu') && document.body.innerText.includes('Vietnamese Egg Rolls (3 rolls)')");
     record("i18n", "EN -> VN -> EN switch", viOk && enOk, { viOk, enOk });
   });
 
+  await step("menu", "direct menu URL, SEO and campaign parameters", async () => {
+    await navigate(`${site}/menu?utm_source=menu-test&utm_campaign=launch#menu-pho`);
+    await waitFor("document.querySelector('[data-category=\"pho\"]')?.getAttribute('aria-current') === 'true'", 5000);
+    const direct = await evaluate(`(() => {
+      const ld = JSON.parse(document.querySelector('[data-menu-schema-fallback]')?.textContent || '{}');
+      return { canonical: document.querySelector('link[rel="canonical"]')?.href,
+        canonicalCount: document.querySelectorAll('link[rel="canonical"]').length,
+        descriptions: document.querySelectorAll('meta[name="description"]').length,
+        schemaItems: ld['@graph']?.[0]?.hasMenuSection?.flatMap(s => s.hasMenuItem).length,
+        visible: document.querySelectorAll('.menu-category-section:not([hidden]) [data-menu-item]').length,
+        microdata: document.querySelectorAll('[itemtype="https://schema.org/MenuItem"]').length,
+        options: document.querySelector('.menu-category-section:not([hidden]) .menu-options')?.textContent,
+        price: document.querySelector('.menu-category-section:not([hidden]) .menu-price')?.textContent }; })()`);
+    record("seo", "direct /menu response retains complete static JSON-LD and live menu microdata", direct.schemaItems === 151 && direct.microdata === 151 && direct.visible === 15 && direct.canonical === "https://ncpho-ten.vercel.app/menu" && direct.canonicalCount === 1 && direct.descriptions === 1, direct);
+    record("menu", "phở sizes and prices are visible", direct.options?.includes('Large') && direct.options?.includes('Regular') && direct.options?.includes('$19.00') && direct.price?.includes('$14.50'), direct);
+    await click(await point("[...document.querySelectorAll('nav button')].find(b => b.textContent.trim() === 'VN' && b.offsetParent !== null)", false));
+    const vi = await waitFor("location.pathname.endsWith('/vi/menu') && location.search.includes('utm_campaign=launch') && location.hash === '#menu-pho' && document.querySelector('[itemprop=\"inLanguage\"]')?.content === 'vi' && document.querySelector('link[rel=\"canonical\"]')?.href === 'https://ncpho-ten.vercel.app/vi/menu'", 5000);
+    record("menu", "language switch preserves category and advertising parameters", vi);
+    await navigate(`${site}/?utm_source=legacy#/#menu`);
+    const legacy = await waitFor("location.pathname.endsWith('/menu') && location.search === '?utm_source=legacy' && !!document.querySelector('.menu-dish-name')", 5000);
+    record("navigation", "legacy /#/#menu links still open the new menu and keep campaign parameters", legacy);
+  });
+
   await step("carousel", "special meals carousel", async () => {
+    await click(await point("[...document.querySelectorAll('nav a')].find((a) => a.textContent.trim() === 'Home' && a.offsetParent !== null)", false));
+    await waitFor("!!document.getElementById('special-meals-heading')", 5000);
     await evaluate("document.getElementById('special-meals-heading').scrollIntoView({ block: 'center', behavior: 'instant' })");
     // Park the pointer away from the strip: hovering it pauses autoplay by design.
     await hover({ x: 2, y: 2 });
@@ -411,10 +478,23 @@ try {
   });
 
   // Gallery (in-app navigation, filter uses AnimatePresence popLayout, lightbox)
+  // Hash routing keeps one document, so resource timing also lists what earlier pages loaded.
+  const loadedSoFar = () => evaluate("performance.getEntriesByType('resource').map((e) => e.name)");
+  // A 1200px original only counts as a regression if this page downloaded it; reusing one that is
+  // already cached (the hero photo) is the browser picking the cheapest srcset candidate.
+  const galleryImageReport = (seen) => evaluate(`(() => {
+    const seen = new Set(${JSON.stringify(seen)});
+    const srcs = [...document.querySelectorAll('main button[aria-label^="View "] img')].filter((i) => i.complete && i.naturalWidth > 0).map((i) => i.currentSrc);
+    const fresh = performance.getEntriesByType('resource').filter((e) => e.initiatorType === 'img' && !seen.has(e.name));
+    return { checked: srcs.length,
+      freshOriginals: srcs.filter((u) => u.includes('/images/gallery/') && !seen.has(u)),
+      galleryImageKB: Math.round(fresh.reduce((s, e) => s + (e.encodedBodySize || 0), 0) / 1024) }; })()`);
+
   await step("gallery", "gallery page", async () => {
+    const seenBeforeGallery = await loadedSoFar();
     await evaluate("window.scrollTo({ top: 0, behavior: 'instant' })");
     await click(await point("[...document.querySelectorAll('nav a')].find((a) => a.textContent.trim() === 'Gallery' && a.offsetParent !== null)", false));
-    const galleryOk = await waitFor("location.hash === '#/gallery' && document.title.startsWith('Gallery')", 5000);
+    const galleryOk = await waitFor("location.pathname.endsWith('/gallery') && document.title.startsWith('Gallery')", 5000);
     await sleep(800);
     const viewCount = "document.querySelectorAll('button[aria-label^=\"View \"]').length";
     const allCount = await evaluate(viewCount);
@@ -432,19 +512,51 @@ try {
     await sleep(800);
     const galleryImgs = await evaluate("(() => { const all = [...document.images]; return { loaded: all.filter((i) => i.complete && i.naturalWidth > 0).length, broken: all.filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc || i.src) }; })()");
     record("images", "gallery page images load (none broken)", galleryImgs.broken.length === 0 && galleryImgs.loaded >= 20, galleryImgs);
+    const desktopReport = await galleryImageReport(seenBeforeGallery);
+    record("images", "gallery thumbnails download resized variants, not 1200px originals (desktop)",
+      desktopReport.checked >= 20 && desktopReport.freshOriginals.length === 0, desktopReport);
+
     await evaluate("window.scrollTo({ top: 0, behavior: 'instant' })");
     await click(await point("document.querySelector('button[aria-label^=\"View \"]')"));
     const dialogOk = await waitFor("(() => { const d = document.querySelector('[role=\"dialog\"]'); const i = d?.querySelector('img'); return !!(i && i.complete && i.naturalWidth > 0); })()", 5000);
+    const focusInside = await waitFor(focusInDialog, 2000);
+    let trapped = true;
+    for (let i = 0; i < 6; i++) {
+      await key("Tab", 9);
+      trapped = trapped && await evaluate(focusInDialog);
+    }
+    for (let i = 0; i < 3; i++) {
+      await key("Tab", 9, 8);
+      trapped = trapped && await evaluate(focusInDialog);
+    }
     await key("Escape", 27);
     const closedOk = await waitFor("!document.querySelector('[role=\"dialog\"]')", 3000);
+    const focusBack = await waitFor("(document.activeElement?.getAttribute('aria-label') || '').startsWith('View ')", 2000);
     record("gallery", "lightbox opens with image and closes on Escape", dialogOk && closedOk, { dialogOk, closedOk });
+    record("a11y", "lightbox moves focus inside, traps Tab/Shift+Tab, and returns focus to the opener", focusInside && trapped && focusBack, { focusInside, trapped, focusBack });
+  });
+
+  await step("navigation", "'Menu' from another page and Back/Forward", async () => {
+    await evaluate("window.scrollTo({ top: 0, behavior: 'instant' })");
+    await click(await point(navLink("Menu"), false));
+    const fromGallery = await waitFor("location.pathname.endsWith('/menu') && !!document.getElementById('menu')", 4000);
+    await sleep(1500);
+    const menuTop = await evaluate("Math.round(document.getElementById('menu')?.getBoundingClientRect().top ?? 9999)");
+    record("menu", "'Menu' in the nav also works from the Gallery page", fromGallery && Math.abs(menuTop) < 220, { fromGallery, menuTop });
+    await evaluate("history.back()");
+    const back = await waitFor("location.pathname.endsWith('/gallery') && document.title.startsWith('Gallery')", 4000);
+    await evaluate("history.forward()");
+    const forward = await waitFor("location.pathname.endsWith('/menu') && !!document.getElementById('menu')", 4000);
+    record("navigation", "browser Back/Forward move between Gallery and Menu", back && forward, { back, forward });
   });
   await step("legal", "privacy/terms pages", async () => {
     for (const route of ["privacy", "terms"]) {
-      await evaluate(`location.hash = '#/${route}'`);
-      const ok = await waitFor(`location.hash === '#/${route}' && document.body.innerText.includes('(252) 833-0239')`, 5000);
+      await navigate(`${site}/${route}`);
+      const ok = await waitFor(`location.pathname.endsWith('/${route}') && document.body.innerText.includes('(252) 833-0239')`, 5000);
       const contact = await evaluate("document.body.innerText.split('\\n').find((line) => line.includes('(252) 833-0239')) ?? null");
-      record("legal", `#/${route} renders with the contact line`, ok, contact ?? "missing");
+      const heading = await evaluate("document.querySelector('h1')?.textContent.trim() ?? null");
+      const expected = route === "privacy" ? "Privacy Policy" : "Terms of Service";
+      record("legal", `/${route} renders its own heading and the contact line`, ok && heading === expected, { heading, contact });
     }
   });
   await takeViolations();
@@ -464,8 +576,52 @@ try {
     const links = await evaluate("[...document.querySelectorAll('nav a')].filter((a) => a.textContent.trim() === 'Menu').map((a) => ({ visible: a.offsetParent !== null, rect: a.getBoundingClientRect().toJSON() }))");
     if (!opened) throw new Error(`hamburger tap did not open the menu; links=${JSON.stringify(links)}`);
     await tap(await point("[...document.querySelectorAll('nav a')].find((a) => a.textContent.trim() === 'Menu' && a.offsetParent !== null)", false));
-    const tapped = await waitFor("location.hash === '#/#menu'", 4000);
-    record("menu", "tap on mobile 'Menu' navigates to the menu section", opened && tapped, { opened, tapped });
+    const tapped = await waitFor("location.pathname.endsWith('/menu') && !!document.querySelector('.menu-dish-name')", 4000);
+    record("menu", "tap on mobile 'Menu' opens the menu page", opened && tapped, { opened, tapped });
+    await sleep(800);
+    const mobileLayout = await evaluate("({ overflow: document.documentElement.scrollWidth > innerWidth, clipped: [...document.querySelectorAll('.menu-category-section:not([hidden]) .menu-price')].some(e => e.getBoundingClientRect().right > innerWidth), categories: document.querySelectorAll('.menu-categories a').length })");
+    record("menu", "mobile menu has no page overflow or clipped prices", !mobileLayout.overflow && !mobileLayout.clipped && mobileLayout.categories === 12, mobileLayout);
+    if (screenshotDir) {
+      const shot = await send("Page.captureScreenshot", { format: "png" });
+      writeFileSync(join(screenshotDir, "menu-mobile.png"), Buffer.from(shot.data, "base64"));
+    }
+  });
+
+  await step("images", "mobile gallery thumbnails", async () => {
+    const seenBeforeGallery = await loadedSoFar();
+    await navigate(`${site}/gallery`);
+    await waitFor("document.title.startsWith('Gallery')", 5000);
+    const height = await evaluate("document.documentElement.scrollHeight");
+    for (let y = 0; y < height; y += 500) {
+      await evaluate(`window.scrollTo({ top: ${y}, behavior: 'instant' })`);
+      await sleep(120);
+    }
+    await sleep(800);
+    const mobileReport = await galleryImageReport(seenBeforeGallery);
+    record("images", "gallery thumbnails download resized variants on mobile", mobileReport.checked >= 20 && mobileReport.freshOriginals.length === 0, mobileReport);
+  });
+  await takeViolations();
+
+  // ================= 2b. App bundle fails to load: the static fallback must still help =================
+  scenario = "fallback";
+  await step("resilience", "fallback when the app's JavaScript fails", async () => {
+    await viewport(1280, 900, false);
+    await navigate(`${site}/__nojs__`);
+    await sleep(2500);
+    const fallback = await evaluate(`(() => { const m = document.querySelector('[data-app-fallback]'); if (!m) return null;
+      return { opacity: getComputedStyle(m).opacity, text: m.innerText, tel: m.querySelector('a[href^="tel:"]')?.getAttribute('href') ?? null }; })()`);
+    record("resilience", "if the app's JavaScript fails, the fallback shows the name, address and phone",
+      !!fallback && fallback.opacity === "1" && fallback.tel === "tel:+12528330239" && fallback.text.includes("1507 Carolina Ave"), fallback ?? "missing");
+  });
+  await takeViolations();
+
+  await step("resilience", "full menu without JavaScript", async () => {
+    await navigate(`${site}/__menu_nojs__`);
+    await sleep(400);
+    const staticMenu = await evaluate("({ items: document.querySelectorAll('[data-menu-item]').length, visible: [...document.querySelectorAll('[data-menu-item]')].filter(e => e.getClientRects().length).length, categories: document.querySelectorAll('.menu-category-section').length, schema: !!document.querySelector('[data-menu-schema-fallback]'), options: document.querySelectorAll('.menu-options > div').length })");
+    record("resilience", "all 151 entries, 147 options and 11 categories are readable without the app bundle", staticMenu.items === 151 && staticMenu.visible === 151 && staticMenu.options === 147 && staticMenu.categories === 11 && staticMenu.schema, staticMenu);
+    await click(await point("document.querySelector('a[data-category=\"pho\"]')"));
+    record("resilience", "native category links still work without JavaScript", await evaluate("location.hash === '#menu-pho'"));
   });
   await takeViolations();
 

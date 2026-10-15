@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ncpho.com/sitemap.xml
+Sitemap: https://ncpho-ten.vercel.app/sitemap.xml

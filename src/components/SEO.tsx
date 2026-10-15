@@ -6,6 +6,8 @@
 import { Helmet } from "react-helmet-async";
 import { useEffect } from "react";
 import { BRAND_INFO, Language } from "../constants";
+import { useLocation } from "react-router-dom";
+import { siteUrl } from "../site";
 
 interface SEOProps {
   title: string;
@@ -20,12 +22,16 @@ interface SEOProps {
 export default function SEO({ title, titleBrand, description, canonical, lang, type = "website", image }: SEOProps) {
   const siteName = BRAND_INFO.name;
   const fullTitle = `${title} | ${titleBrand ?? siteName}`;
-  const url = canonical || "https://ncpho.com";
+  const { pathname } = useLocation();
+  const url = canonical || siteUrl(pathname);
 
   useEffect(() => {
     // React 19 renders the active metadata; retire the initial HTML fallbacks.
     document.querySelectorAll("[data-seo-fallback]").forEach((element) => element.remove());
-  }, []);
+    if (pathname !== "/menu" && pathname !== "/vi/menu") {
+      document.querySelectorAll("[data-menu-schema-fallback]").forEach(element => element.remove());
+    }
+  }, [pathname]);
 
   return (
     <Helmet htmlAttributes={{ lang }}>

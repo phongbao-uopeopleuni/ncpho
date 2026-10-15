@@ -11,7 +11,8 @@ export type GalleryItem = {
 
 // Image paths are written root-relative; prefix Vite's base so they also resolve when the
 // site is served from a sub-path (GitHub Pages project site: /ncpho/).
-const withBase = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+// `?.` keeps this importable from Node tests, where Vite's import.meta.env does not exist.
+const withBase = (path: string) => `${import.meta.env?.BASE_URL ?? "/"}${path.replace(/^\/+/, "")}`;
 
 export const GALLERY_ITEMS: GalleryItem[] = ([
   { id: "food-3", image: "/images/gallery/food-3.webp", category: "Food", title: { en: "Signature Beef Phở", vi: "Phở Bò Đặc Biệt" } },
@@ -44,4 +45,13 @@ export const GALLERY_ITEMS: GalleryItem[] = ([
   { id: "drink-1", image: "/images/gallery/drink-1.webp", category: "Drinks", title: { en: "Vietnamese Drinks", vi: "Thức Uống Việt Nam" } },
   { id: "drink-2", image: "/images/gallery/drink-2.webp", category: "Drinks", title: { en: "Fresh Smoothies", vi: "Sinh Tố Tươi" } },
 ] satisfies GalleryItem[]).map((item) => ({ ...item, image: withBase(item.image) }));
+
+/**
+ * Responsive candidates for a gallery photo: the 360/720px variants that
+ * scripts/optimize-special-meals.py generates from public/images/gallery, plus the original.
+ */
+export function gallerySrcSet(item: GalleryItem): string {
+  const variant = (width: number) => withBase(`images/special-meals/${item.id}-${width}.webp`);
+  return `${variant(360)} 360w, ${variant(720)} 720w, ${item.image} 1200w`;
+}
 

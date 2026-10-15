@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
 import {cspMetaPlugin} from './security/csp';
+import {menuPagesPlugin} from './scripts/menu-pages';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
@@ -10,7 +11,7 @@ export default defineConfig(({mode}) => {
   return {
     base: basePath,
     // cspMetaPlugin is build-only: production gets the CSP meta tag, dev/HMR does not.
-    plugins: [react(), tailwindcss(), cspMetaPlugin()],
+    plugins: [react(), tailwindcss(), cspMetaPlugin(), menuPagesPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

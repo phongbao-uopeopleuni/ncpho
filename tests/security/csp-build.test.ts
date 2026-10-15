@@ -42,6 +42,13 @@ test("production build ships the CSP meta, no inline JS, no source maps and no s
     }
     // Same lint as the plugin, on the final HTML (minus the meta we injected ourselves).
     assert.doesNotThrow(() => assertHtmlCompatibleWithCsp(html.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/, "")));
+    for (const path of ["menu.html", "vi/menu.html"]) {
+      const menu = sourceOf(output.find(o => o.fileName === path)!);
+      assert.equal((menu.match(/http-equiv="Content-Security-Policy"/g) || []).length, 1, path);
+      assert.ok(menu.includes(META_CSP), `${path}: strict CSP missing`);
+      assert.doesNotThrow(() => assertHtmlCompatibleWithCsp(menu.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/, "")));
+      assert.equal((menu.match(/data-menu-item=/g) || []).length, 151, `${path}: incomplete built menu`);
+    }
 
     assert.deepEqual(output.filter((o) => o.fileName.endsWith(".map")).map((o) => o.fileName), [], "no source maps");
     for (const file of output) {

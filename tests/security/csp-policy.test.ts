@@ -36,6 +36,16 @@ test("frame-ancestors is header-only (browsers ignore it in <meta>)", () => {
   assert.deepEqual(parseCsp(HEADER_CSP).get("frame-ancestors"), ["'none'"]);
 });
 
+test("a directive appended by a proxy or antivirus cannot corrupt the last directive", () => {
+  for (const policy of [META_CSP, HEADER_CSP]) {
+    assert.ok(policy.endsWith(";"), "policy must end with ';'");
+    // Exactly what Kaspersky Web Anti-Virus was observed appending to the meta tag.
+    const tampered = parseCsp(`${policy} child-src http://gc.kis.v2.scr.kaspersky-labs.com ws://gc.kis.v2.scr.kaspersky-labs.com;`);
+    assert.deepEqual(tampered.get("trusted-types"), ["'none'"]);
+    assert.deepEqual(tampered.get("require-trusted-types-for"), ["'script'"]);
+  }
+});
+
 test("vercel.json and public/_headers carry exactly the header policy", () => {
   const vercel = JSON.parse(read("vercel.json"));
   const vercelCsp = vercel.headers

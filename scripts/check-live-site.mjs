@@ -22,8 +22,20 @@ export async function checkLiveSite(url, request = get) {
   if (!/data-app-fallback/.test(html)) problems.push("static fallback missing");
   if (!html.includes("(252) 833-0239")) problems.push("phone number missing from the HTML");
 
-  const assets = [...html.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)="([^"]*\/assets\/[^"]+\.(?:js|css))"/g)]
-    .map((m) => new URL(m[1], url).href);
+  // Inspect the generated document's actual tags, not commented markup or CSS preloads.
+  const markup = html.replace(/<!--[\s\S]*?-->/g, "");
+  const assets = [...markup.matchAll(/<(script|link)\b([^>]*)>/gi)].flatMap(([, tag, attrs]) => {
+    const attribute = name => new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i").exec(attrs)?.slice(1).find(value => value !== undefined);
+    const isScript = tag.toLowerCase() === "script";
+    if (!isScript) {
+      const rel = (attribute("rel") || "").toLowerCase().split(/\s+/);
+      if (!rel.includes("stylesheet") || rel.includes("alternate") || /(?:^|\s)disabled(?:\s|=|$)/i.test(attrs)) return [];
+    }
+    const path = attribute(isScript ? "src" : "href");
+    if (!path || !/\/assets\/[^?#]+\.(?:js|css)$/.test(path)) return [];
+    if (!(isScript ? path.endsWith(".js") : path.endsWith(".css"))) return [];
+    return [new URL(path, url).href];
+  });
   if (!assets.some((asset) => asset.endsWith(".js"))) problems.push("no JS bundle referenced");
   if (!assets.some((asset) => asset.endsWith(".css"))) problems.push("no CSS stylesheet referenced");
 

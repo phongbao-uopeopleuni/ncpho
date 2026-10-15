@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, Pause, Play, ArrowUpRight } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { menuPath } from "../site";
 import { Language } from "../constants";
 import { GALLERY_ITEMS } from "../data/gallery";
 
@@ -140,8 +141,8 @@ export default function SpecialMeals({ lang }: { lang: Language }) {
                 : "Từ tô phở nóng hổi đến những món đặc biệt của nhà hàng, khám phá hương vị tại NC PHO."}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-5">
-              <Link to="/gallery" className="inline-flex items-center gap-3 rounded-full bg-accent-clay px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#9E3E23] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-gold">
-                {lang === "en" ? "View All Dishes" : "Xem các món ăn"}
+              <Link to={menuPath(lang)} className="inline-flex items-center gap-3 rounded-full bg-accent-clay px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#9E3E23] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-gold">
+                {lang === "en" ? "View Full Menu" : "Xem thực đơn"}
                 <ArrowUpRight size={18} aria-hidden />
               </Link>
               <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/70">

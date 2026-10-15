@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Phone } from "lucide-react";
 import { BRAND_INFO, Language } from "../constants";
+import { menuPath } from "../site";
 
 interface HeroProps {
   lang: Language;
@@ -45,7 +46,7 @@ export default function Hero({ lang }: HeroProps) {
               : "Nước dùng hầm chậm, rau thơm tươi và một lời chào Việt Nam ấm áp ngay tại Washington, NC."}
           </p>
           <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
-            <Link to="/#menu" className="inline-flex min-h-13 items-center justify-center gap-2.5 rounded-full bg-accent-clay px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-clay/20 transition-colors hover:bg-hero-clay-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-clay sm:gap-3 sm:px-7 sm:text-base">
+            <Link to={menuPath(lang)} className="inline-flex min-h-13 items-center justify-center gap-2.5 rounded-full bg-accent-clay px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-clay/20 transition-colors hover:bg-hero-clay-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-clay sm:gap-3 sm:px-7 sm:text-base">
               {lang === "en" ? "Explore Menu" : "Xem thực đơn"}
               <ArrowRight size={19} aria-hidden />
             </Link>

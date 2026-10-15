@@ -8,6 +8,7 @@ import { Menu as MenuIcon, X, Globe } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { BRAND_INFO, GOOGLE_MAPS_URL, Language } from "../constants";
+import { menuPath } from "../site";
 
 function SocialIconLink({
   href,
@@ -78,7 +79,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
             </div>
 
             <Link
-              to="/#menu"
+              to={menuPath(lang)}
               className="shrink-0 rounded-full border border-neutral-900 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-white"
             >
               {lang === "en" ? "Explore" : "Khám phá"}
@@ -163,7 +164,7 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
               </Link>
             ))}
             <Link
-              to="/#menu"
+              to={menuPath(lang)}
               onClick={() => setIsOpen(false)}
               className="mt-2 rounded-full border border-neutral-900 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-900"
             >

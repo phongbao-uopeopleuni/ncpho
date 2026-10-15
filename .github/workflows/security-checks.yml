@@ -31,7 +31,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: npm
 
       - run: npm ci
@@ -72,19 +72,18 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # The browser harness needs the global WebSocket (Node 22+).
-          node-version: "22"
+          # Node 24 LTS everywhere (Node 20 reached end-of-life on 2026-04-30); the browser harness needs Node 22+.
+          node-version: "24"
           cache: npm
 
       - run: npm ci
       - run: npm run lint
       - run: npm run test:security
-      # Same base path as deploy-pages.yml, served the way GitHub Pages serves the project site.
+      - run: npm run test:app
+      # Vercel production serves from /; exercise its clean URLs and configured rewrites.
       - run: npm run build
-        env:
-          VITE_BASE_PATH: /ncpho/
 
-      - name: Browser CSP test (headless Chrome, GitHub Pages-like server)
-        run: npm run test:security:browser -- --base=/ncpho/
+      - name: Browser CSP test (headless Chrome, Vercel routing)
+        run: npm run test:security:browser
         env:
           CHROME_PATH: /usr/bin/google-chrome

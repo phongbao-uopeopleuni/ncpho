@@ -1,8 +1,8 @@
 /**
  * Single source of truth for the production Content-Security-Policy.
  *
- * Production is GitHub Pages, which cannot send custom response headers, so the
- * build injects the policy as a <meta http-equiv> tag (see `cspMetaPlugin`).
+ * Vercel sends the policy as a response header. The build also injects a
+ * <meta http-equiv> policy for portable static previews (see `cspMetaPlugin`).
  * `vercel.json` and `public/_headers` carry the same policy as a real header for
  * hosts that honour them; tests/security/csp-policy.test.ts keeps all three in sync.
  *
@@ -49,10 +49,13 @@ const HEADER_ONLY_DIRECTIVES: Directives = {
  */
 export const ALLOWED_INLINE_SCRIPT_HASHES: readonly string[] = [];
 
+// The trailing ";" keeps the last directive intact when a proxy or antivirus appends its own
+// (seen with Kaspersky appending "child-src ..." and corrupting "trusted-types 'none'").
 function serialize(directives: Directives): string {
-  return Object.entries(directives)
+  const body = Object.entries(directives)
     .map(([name, values]) => [name, ...values].join(" "))
     .join("; ");
+  return `${body};`;
 }
 
 export const META_CSP = serialize(BASE_DIRECTIVES);

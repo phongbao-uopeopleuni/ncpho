@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { BRAND_INFO, Language } from "../constants";
 import SEO from "./SEO";
+import { siteUrl } from "../site";
 
 interface PrivacyPolicyProps {
   lang: Language;
@@ -187,7 +188,7 @@ export default function PrivacyPolicy({ lang }: PrivacyPolicyProps) {
 
   return (
     <div className="bg-bg-cream min-h-screen">
-      <SEO title={title} description={description} lang={lang} canonical="https://ncpho.com/privacy" />
+      <SEO title={title} description={description} lang={lang} canonical={siteUrl("/privacy")} />
       <section className="section-padding">
         <div className="max-w-3xl mx-auto">
           <Link

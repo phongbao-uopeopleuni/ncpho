@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { BRAND_INFO, Language } from "../constants";
 import SEO from "./SEO";
+import { siteUrl } from "../site";
 
 interface TermsOfServiceProps {
   lang: Language;
@@ -213,7 +214,7 @@ export default function TermsOfService({ lang }: TermsOfServiceProps) {
 
   return (
     <div className="bg-bg-cream min-h-screen">
-      <SEO title={title} description={description} lang={lang} canonical="https://ncpho.com/terms" />
+      <SEO title={title} description={description} lang={lang} canonical={siteUrl("/terms")} />
       <section className="section-padding">
         <div className="max-w-3xl mx-auto">
           <Link

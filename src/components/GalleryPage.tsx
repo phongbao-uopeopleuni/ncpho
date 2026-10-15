@@ -4,11 +4,11 @@
  */
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Camera, ChevronLeft, ChevronRight, Coffee, Filter, Maximize2, Utensils, X } from "lucide-react";
 import { BRAND_INFO, Language } from "../constants";
 import SEO from "./SEO";
-import { GALLERY_ITEMS, GalleryCategory, GalleryItem } from "../data/gallery";
+import { GALLERY_ITEMS, GalleryCategory, GalleryItem, gallerySrcSet } from "../data/gallery";
 
 interface GalleryPageProps {
   lang: Language;
@@ -30,12 +30,38 @@ export default function GalleryPage({ lang }: GalleryPageProps) {
     : GALLERY_ITEMS.filter((item) => item.category === filter);
 
   const selectedItem = selectedIndex === null ? null : filteredItems[selectedIndex];
+  const isOpen = selectedItem !== null;
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Modal focus: move focus into the lightbox when it opens and hand it back to the opener on close.
+  useEffect(() => {
+    if (!isOpen) return;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeButtonRef.current?.focus();
+    return () => opener?.focus();
+  }, [isOpen]);
 
   useEffect(() => {
     if (!selectedItem) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setSelectedIndex(null);
+      // Keep Tab / Shift+Tab cycling inside the lightbox (aria-modal promises the page behind is inert).
+      if (event.key === "Tab" && dialogRef.current) {
+        const focusable = [...dialogRef.current.querySelectorAll<HTMLElement>("button, [href], [tabindex]:not([tabindex='-1'])")];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+        const outside = !dialogRef.current.contains(active);
+        if (first && event.shiftKey && (active === first || outside)) {
+          event.preventDefault();
+          last.focus();
+        } else if (first && !event.shiftKey && (active === last || outside)) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
       if (event.key === "ArrowLeft") {
         setSelectedIndex((current) => current === null ? null : (current - 1 + filteredItems.length) % filteredItems.length);
       }
@@ -116,6 +142,8 @@ export default function GalleryPage({ lang }: GalleryPageProps) {
                 >
                   <img
                     src={item.image}
+                    srcSet={gallerySrcSet(item)}
+                    sizes="(min-width: 1024px) 15rem, (min-width: 640px) 56vw, 78vw"
                     alt={item.title[lang]}
                     width="1200"
                     height="1697"
@@ -186,6 +214,8 @@ export default function GalleryPage({ lang }: GalleryPageProps) {
                   <div className="aspect-[42/59.4] overflow-hidden">
                     <img
                       src={item.image}
+                      srcSet={gallerySrcSet(item)}
+                      sizes="(min-width: 1280px) 25rem, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
                       alt={item.title[lang]}
                       width="1200"
                       height="1697"
@@ -217,12 +247,14 @@ export default function GalleryPage({ lang }: GalleryPageProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[80] flex items-center justify-center bg-[#0d1712]/95 p-4 backdrop-blur-md sm:p-8"
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label={selectedItem.title[lang]}
             onClick={() => setSelectedIndex(null)}
           >
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={() => setSelectedIndex(null)}
               className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white hover:text-primary sm:right-8 sm:top-8"

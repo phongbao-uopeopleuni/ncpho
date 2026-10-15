@@ -62,14 +62,14 @@ export const BRAND_INFO = {
   nav: {
     en: [
       { name: "Home", href: "/" },
-      { name: "Menu", href: "/#menu" },
+      { name: "Menu", href: "/menu" },
       { name: "Gallery", href: "/gallery" },
       { name: "About", href: "/#about" },
       { name: "Contact", href: "/#contact" },
     ],
     vi: [
       { name: "Trang chủ", href: "/" },
-      { name: "Thực đơn", href: "/#menu" },
+      { name: "Thực đơn", href: "/vi/menu" },
       { name: "Thư viện ảnh", href: "/gallery" },
       { name: "Về chúng tôi", href: "/#about" },
       { name: "Liên hệ", href: "/#contact" },

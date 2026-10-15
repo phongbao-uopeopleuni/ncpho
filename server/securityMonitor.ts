@@ -23,9 +23,17 @@ function readPositiveNumber(name: string, fallback: number): number {
   return raw && Number.isFinite(value) && value > 0 ? value : fallback;
 }
 
+// Thresholds count requests, so only whole numbers >= 1 make sense; anything else
+// (e.g. "0.5", which previously made pruneTimestamps loop forever) uses the default.
+function readCountThreshold(name: string, fallback: number): number {
+  const raw = process.env[name];
+  const value = Number(raw);
+  return raw && Number.isInteger(value) && value >= 1 ? value : fallback;
+}
+
 const trafficWindowMs = readPositiveNumber("SECURITY_TRAFFIC_WINDOW_MS", 60_000);
-const trafficThreshold = readPositiveNumber("SECURITY_TRAFFIC_THRESHOLD", 120);
-const errorThreshold = readPositiveNumber("SECURITY_ERROR_THRESHOLD", 25);
+const trafficThreshold = readCountThreshold("SECURITY_TRAFFIC_THRESHOLD", 120);
+const errorThreshold = readCountThreshold("SECURITY_ERROR_THRESHOLD", 25);
 const alertCooldownMs = readPositiveNumber("SECURITY_ALERT_COOLDOWN_MS", 5 * 60_000);
 const alertWebhookUrl = process.env.SECURITY_ALERT_WEBHOOK_URL;
 const WEBHOOK_TIMEOUT_MS = 5_000;
@@ -41,7 +49,8 @@ function pruneTimestamps(list: number[], now: number, max: number): number[] {
   while (list.length && list[0] < min) {
     list.shift();
   }
-  while (list.length > max) {
+  // Guarded on length too, so a negative or fractional `max` can never spin on an empty list.
+  while (list.length > 0 && list.length > max) {
     list.shift();
   }
   return list;

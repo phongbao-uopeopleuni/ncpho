@@ -29,7 +29,7 @@ export async function checkLiveSite(url, request = get) {
     const isScript = tag.toLowerCase() === "script";
     if (!isScript) {
       const rel = (attribute("rel") || "").toLowerCase().split(/\s+/);
-      if (!rel.includes("stylesheet") || rel.includes("alternate") || /(?:^|\s)disabled(?:\s|=|$)/i.test(attrs)) return [];
+      if (!rel.includes("stylesheet") || rel.includes("alternate") || /(?:^|\s)disabled(?:\s|=|\/|$)/i.test(attrs)) return [];
     }
     const path = attribute(isScript ? "src" : "href");
     if (!path || !/\/assets\/[^?#]+\.(?:js|css)$/.test(path)) return [];

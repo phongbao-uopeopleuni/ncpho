@@ -25,7 +25,7 @@ test("a CSS preload does not satisfy the stylesheet requirement", async () => {
   assert.ok(problems.includes("no CSS stylesheet referenced"));
 });
 test("commented, disabled and alternate stylesheet links do not satisfy the requirement", async () => {
-  for (const inactive of [`<!-- ${css} -->`, '<link rel="stylesheet" disabled href="/assets/site.css">', '<link rel="alternate stylesheet" href="/assets/site.css">']) {
+  for (const inactive of [`<!-- ${css} -->`, '<link rel="stylesheet" disabled href="/assets/site.css">', '<link rel="stylesheet" href="/assets/site.css" disabled/>', '<link rel="alternate stylesheet" href="/assets/site.css">']) {
     const problems = await checkLiveSite(origin, requestFor(page(js + inactive)));
     assert.ok(problems.includes("no CSS stylesheet referenced"), inactive);
   }

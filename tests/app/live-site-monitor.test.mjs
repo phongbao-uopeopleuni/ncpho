@@ -19,6 +19,25 @@ test("live-site monitor rejects an entirely missing stylesheet reference", async
   const problems = await checkLiveSite(origin, requestFor(page(js)));
   assert.ok(problems.includes("no CSS stylesheet referenced"));
 });
+test("a CSS preload does not satisfy the stylesheet requirement", async () => {
+  const preload = '<link rel="preload" href="/assets/site.css" as="style">';
+  const problems = await checkLiveSite(origin, requestFor(page(js + preload)));
+  assert.ok(problems.includes("no CSS stylesheet referenced"));
+});
+test("commented, disabled and alternate stylesheet links do not satisfy the requirement", async () => {
+  for (const inactive of [`<!-- ${css} -->`, '<link rel="stylesheet" disabled href="/assets/site.css">', '<link rel="alternate stylesheet" href="/assets/site.css">']) {
+    const problems = await checkLiveSite(origin, requestFor(page(js + inactive)));
+    assert.ok(problems.includes("no CSS stylesheet referenced"), inactive);
+  }
+});
+test("real stylesheet links support single quotes and either attribute order", async () => {
+  const stylesheet = "<link href='/assets/site.css' rel='stylesheet'>";
+  assert.deepEqual(await checkLiveSite(origin, requestFor(page(js + stylesheet))), []);
+});
+test("a script referencing a CSS asset does not satisfy the stylesheet requirement", async () => {
+  const problems = await checkLiveSite(origin, requestFor(page(js + '<script src="/assets/site.css"></script>')));
+  assert.ok(problems.includes("no CSS stylesheet referenced"));
+});
 test("live-site monitor rejects an entirely missing JavaScript reference", async () => {
   const problems = await checkLiveSite(origin, requestFor(page(css)));
   assert.ok(problems.includes("no JS bundle referenced"));

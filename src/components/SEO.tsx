@@ -31,6 +31,10 @@ export default function SEO({ title, titleBrand, description, canonical, lang, t
     if (pathname !== "/menu" && pathname !== "/vi/menu") {
       document.querySelectorAll("[data-menu-schema-fallback]").forEach(element => element.remove());
     }
+    // Pre-rendered blog JSON-LD describes only the page it was built for.
+    document.querySelectorAll<HTMLElement>("[data-blog-schema-fallback]").forEach(element => {
+      if (element.dataset.blogPath !== pathname) element.remove();
+    });
   }, [pathname]);
 
   return (

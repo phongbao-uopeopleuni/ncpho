@@ -41,6 +41,12 @@
       ]
     },
     {
+      "source": "/(blog|vi/blog)/:slug*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
       "source": "/(.*)\\.html",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
@@ -48,6 +54,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/((?!api(?:/|$)|assets(?:/|$)|menu(?:/|$)|vi/menu(?:/|$)|.*\\..*).*)", "destination": "/" }
+    { "source": "/((?!api(?:/|$)|assets(?:/|$)|menu(?:/|$)|vi/menu(?:/|$)|blog(?:/|$)|vi/blog(?:/|$)|.*\\..*).*)", "destination": "/" }
   ]
 }

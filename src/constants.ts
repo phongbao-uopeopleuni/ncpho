@@ -64,6 +64,7 @@ export const BRAND_INFO = {
       { name: "Home", href: "/" },
       { name: "Menu", href: "/menu" },
       { name: "Gallery", href: "/gallery" },
+      { name: "Blog", href: "/blog" },
       { name: "About", href: "/#about" },
       { name: "Contact", href: "/#contact" },
     ],
@@ -71,6 +72,7 @@ export const BRAND_INFO = {
       { name: "Trang chủ", href: "/" },
       { name: "Thực đơn", href: "/vi/menu" },
       { name: "Thư viện ảnh", href: "/gallery" },
+      { name: "Blog", href: "/vi/blog" },
       { name: "Về chúng tôi", href: "/#about" },
       { name: "Liên hệ", href: "/#contact" },
     ]

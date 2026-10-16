@@ -49,6 +49,14 @@ test("production build ships the CSP meta, no inline JS, no source maps and no s
       assert.doesNotThrow(() => assertHtmlCompatibleWithCsp(menu.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/, "")));
       assert.equal((menu.match(/data-menu-item=/g) || []).length, 151, `${path}: incomplete built menu`);
     }
+    const blogPages = output.filter(o => /^(?:vi\/)?blog(?:\/[a-z0-9-]+)?\.html$/.test(o.fileName));
+    assert.equal(blogPages.length, 32, "journal index and 15 posts in each language");
+    for (const page of blogPages) {
+      const html = sourceOf(page);
+      assert.equal((html.match(/http-equiv="Content-Security-Policy"/g) || []).length, 1, page.fileName);
+      assert.ok(html.includes(META_CSP), `${page.fileName}: strict CSP missing`);
+      assert.doesNotThrow(() => assertHtmlCompatibleWithCsp(html.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/, "")));
+    }
 
     assert.deepEqual(output.filter((o) => o.fileName.endsWith(".map")).map((o) => o.fileName), [], "no source maps");
     for (const file of output) {

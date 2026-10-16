@@ -11,7 +11,7 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "test:security": "node --import tsx --test tests/security/csp-policy.test.ts tests/security/csp-build.test.ts tests/security/api.test.ts tests/security/ai-client.test.ts tests/security/monitor.test.ts",
-    "test:app": "node --import tsx --test tests/app/fallback.test.ts tests/app/error-boundary.test.tsx tests/app/gallery.test.ts tests/app/menu.test.tsx tests/app/live-site-monitor.test.mjs",
+    "test:app": "node --import tsx --test tests/app/fallback.test.ts tests/app/error-boundary.test.tsx tests/app/gallery.test.ts tests/app/menu.test.tsx tests/app/blog.test.tsx tests/app/live-site-monitor.test.mjs",
     "test:security:browser": "node tests/security/browser-csp.mjs dist",
     "audit:security": "npm audit"
   },

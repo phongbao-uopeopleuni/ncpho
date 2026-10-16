@@ -11,7 +11,8 @@ import Hero from "./components/Hero";
 import About from "./components/About";
 import MenuSection from "./components/MenuSection";
 import MenuPage from "./components/MenuPage";
-import { menuPath, siteUrl } from "./site";
+import LazyBlogPage from "./components/LazyBlogPage";
+import { menuPath, pathLanguage, siteUrl, translatedPath } from "./site";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import NotFound from "./components/NotFound";
@@ -44,14 +45,20 @@ function Home({ lang }: { lang: Language }) {
 
 export default function App() {
   const { pathname, hash, search, key } = useLocation();
-  const [preferredLang, setPreferredLang] = useState<Language>(() => pathname === "/vi/menu" ? "vi" : "en");
+  // Menu and blog URLs carry their language (/vi/...); other pages follow the visitor's last choice.
+  const urlLang = pathLanguage(pathname);
+  const [preferredLang, setPreferredLang] = useState<Language>(() => urlLang ?? "en");
   const navigate = useNavigate();
   const isMenuPage = pathname === "/menu" || pathname === "/vi/menu";
-  const lang: Language = isMenuPage ? (pathname === "/vi/menu" ? "vi" : "en") : preferredLang;
+  const lang: Language = urlLang ?? preferredLang;
   const setLang = (next: Language) => {
     setPreferredLang(next);
-    if (isMenuPage) navigate({ pathname: menuPath(next), search, hash });
+    if (urlLang) navigate({ pathname: translatedPath(pathname, next), search, hash });
   };
+
+  useEffect(() => {
+    if (urlLang) setPreferredLang(urlLang);
+  }, [urlLang]);
 
   useEffect(() => {
     document.documentElement.lang = lang === "vi" ? "vi" : "en";
@@ -90,6 +97,10 @@ export default function App() {
           <Route path="/" element={<Home lang={lang} />} />
           <Route path="/menu" element={<MenuPage lang="en" />} />
           <Route path="/vi/menu" element={<MenuPage lang="vi" />} />
+          <Route path="/blog" element={<LazyBlogPage page="index" lang="en" />} />
+          <Route path="/vi/blog" element={<LazyBlogPage page="index" lang="vi" />} />
+          <Route path="/blog/:slug" element={<LazyBlogPage page="post" lang="en" />} />
+          <Route path="/vi/blog/:slug" element={<LazyBlogPage page="post" lang="vi" />} />
           <Route path="/gallery" element={<GalleryPage lang={lang} />} />
           <Route path="/privacy" element={<PrivacyPolicy lang={lang} />} />
           <Route path="/terms" element={<TermsOfService lang={lang} />} />
